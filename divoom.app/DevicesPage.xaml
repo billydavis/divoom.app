@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="divoom.app.DevicesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:divoom.app"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:divoom.app.Models"
+    mc:Ignorable="d"
+    Background="#20262d">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Devices" FontSize="20" Padding="18 8" />
+
+        
+       <ScrollViewer Grid.Row="1">
+            <Grid>
+                <Grid.Resources>
+                    <Style x:Key="DevicesGridStyle"
+                           TargetType="GridViewItem">
+                        <Setter Property="Margin" Value="0 8"/>
+                    </Style>
+                    <DataTemplate x:Key="DeviceGridViewTemplate" x:DataType="models:DeviceViewModel">
+                        <local:DivoomButton Device="{x:Bind}"></local:DivoomButton>
+                    </DataTemplate>
+                    <ItemsPanelTemplate x:Key="DevicesPanelTemplate">
+                        <ItemsWrapGrid Orientation="Vertical"
+                                       HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </Grid.Resources>
+                <GridView x:Name="DevicesGridView"
+                          ItemsSource="{x:Bind Devices}"
+                          HorizontalAlignment="Center"
+                          ItemTemplate="{StaticResource DeviceGridViewTemplate}"
+                          ItemsPanel="{StaticResource DevicesPanelTemplate}"
+                          ItemContainerStyle="{StaticResource DevicesGridStyle}"
+                          ContainerContentChanging="DevicesGridContainerContentChanging">
+                </GridView>
+            </Grid>
+       </ScrollViewer>
+    </Grid>
+</Page>

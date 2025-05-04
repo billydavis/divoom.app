@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "divoom.app (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "divoom.app (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

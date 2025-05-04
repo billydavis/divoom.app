@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="divoom.app.ImageViewerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:divoom.app"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="#20262d">
+        <Grid.Resources>
+            <Style x:Key="ImageGridViewItemContainerStyle"
+                   TargetType="GridViewItem">
+                <Setter Property="Background" Value="#272d34"/>
+                <Setter Property="Margin" Value="8"/>
+                
+                
+            </Style>
+            <DataTemplate x:Key="ImageGridViewItemTemplate"  x:DataType="local:ImageFileInfo">
+                <Grid 
+                 Height="300"
+                  Width="300"
+                 >
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Image x:Name="ItemImage"
+                       Source="Assets/StoreLogo.png"
+                       Stretch="None"/>
+
+                    <StackPanel Orientation="Vertical"
+                            Grid.Row="1">
+                        <TextBlock Text="{x:Bind ImageTitle}"
+                               HorizontalAlignment="Center"
+                               Style="{StaticResource SubtitleTextBlockStyle}" />
+                        <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+                            <TextBlock Text="{x:Bind ImageFileType}"
+                                   HorizontalAlignment="Center"
+                                   Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBlock Text="{x:Bind ImageDimensions}"
+                                   HorizontalAlignment="Center"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Margin="8,0,0,0" />
+                        </StackPanel>
+
+                        <RatingControl Value="{x:Bind ImageRating}" IsReadOnly="True"/>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+            <ItemsPanelTemplate x:Key="ImageGridView_ItemsPanelTemplate">
+                <ItemsWrapGrid Orientation="Horizontal"
+                           HorizontalAlignment="Center"/>
+            </ItemsPanelTemplate>
+        </Grid.Resources>
+        <GridView x:Name="ImageGridView"
+              ItemsSource="{x:Bind Images}"
+              HorizontalAlignment="Center"
+              ItemTemplate="{StaticResource ImageGridViewItemTemplate}"
+              ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
+              ItemContainerStyle="{StaticResource ImageGridViewItemContainerStyle}"
+              ContainerContentChanging="ImageGridView_ContainerContentChanging">
+        </GridView>
+    </Grid>
+</Page>

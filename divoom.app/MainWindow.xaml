@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="divoom.app.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:divoom.app"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Divoom Manager">
+
+    <Grid x:Name="root"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          Background="#141c26">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+
+        <!--#region [Custom TitleBar]-->
+        <Grid
+            x:Name="CustomTitleBar"
+            Grid.Row="0"
+            Height="30"
+            Margin="0">
+            <StackPanel Orientation="Horizontal">
+                <Image
+                    Width="24"
+                    Height="24"
+                    Margin="16 0"
+                    Source="ms-appx:///Assets/Heart-V1.png" />
+                <TextBlock
+                    Margin="2,0"
+                    VerticalAlignment="Center"
+                    FontSize="16px"
+                    Text="{x:Bind Title, Mode=OneWay}" />
+            </StackPanel>
+        </Grid>
+        <!--#endregion-->
+
+        <Grid Grid.Row="1" Background="#141c26" >
+
+            <SplitView x:Name="SplitView" 
+                       IsPaneOpen="True" 
+                       OpenPaneLength="54" 
+                       DisplayMode="Inline" 
+                       PaneBackground="#141c26">
+                <SplitView.Pane>
+                   <local:SideMenu x:Name="SideMenu" NavigationChange="SideMenu_OnNavigationChange"  />
+                </SplitView.Pane>
+
+                <Frame x:Name="ContentFrame" CornerRadius="8 0 0 0" Width="Auto" Margin="0"/>
+            </SplitView>
+        </Grid>
+    </Grid>
+</Window>
