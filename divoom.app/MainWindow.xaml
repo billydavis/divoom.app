@@ -12,7 +12,7 @@
     <Grid x:Name="root"
           HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"
-          Background="#141c26">
+          Background="{ThemeResource AppTitleBarBrush}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
@@ -27,11 +27,12 @@
             Height="30"
             Margin="0">
             <StackPanel Orientation="Horizontal">
-                <Image
-                    Width="24"
-                    Height="24"
-                    Margin="16 0"
-                    Source="ms-appx:///Assets/Heart-V1.png" />
+                <Grid Width="24" Height="24" Margin="16 0">
+                    <Image Source="ms-appx:///Assets/AppIcon-dark.png"
+                           Visibility="{ThemeResource AppIconDarkVisibility}" />
+                    <Image Source="ms-appx:///Assets/AppIcon-light.png"
+                           Visibility="{ThemeResource AppIconLightVisibility}" />
+                </Grid>
                 <TextBlock
                     Margin="2,0"
                     VerticalAlignment="Center"
@@ -41,13 +42,13 @@
         </Grid>
         <!--#endregion-->
 
-        <Grid Grid.Row="1" Background="#141c26" >
+        <Grid Grid.Row="1" Background="{ThemeResource AppChromeBrush}" >
 
             <SplitView x:Name="SplitView" 
                        IsPaneOpen="True" 
-                       OpenPaneLength="54" 
+                       OpenPaneLength="68"
                        DisplayMode="Inline" 
-                       PaneBackground="#141c26">
+                       PaneBackground="{ThemeResource AppSidebarBrush}">
                 <SplitView.Pane>
                    <local:SideMenu x:Name="SideMenu" NavigationChange="SideMenu_OnNavigationChange"  />
                 </SplitView.Pane>

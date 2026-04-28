@@ -1,69 +1,66 @@
-using System.ComponentModel;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace divoom.app;
 
-public sealed partial class SideMenuButton : UserControl, INotifyPropertyChanged
+public sealed partial class SideMenuButton : UserControl
 {
-    private string _text;
-    private string _glyph;
+    public static readonly DependencyProperty TextProperty =
+        DependencyProperty.Register(nameof(Text), typeof(string), typeof(SideMenuButton),
+            new PropertyMetadata(string.Empty));
+
+    public static readonly DependencyProperty GlyphProperty =
+        DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(SideMenuButton),
+            new PropertyMetadata(string.Empty));
+
+
+    public static readonly DependencyProperty IsSelectedProperty =
+        DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(SideMenuButton),
+            new PropertyMetadata(false, OnIsSelectedChanged));
+
+    private bool _pointerOver;
 
     public SideMenuButton()
     {
-        this.InitializeComponent();
-        this.Tapped += OnSideMenuButtonTapped;
+        InitializeComponent();
+        PointerEntered  += (_, _) => { _pointerOver = true;  VisualStateManager.GoToState(this, "PointerOver", true); };
+        PointerExited   += (_, _) => { _pointerOver = false; VisualStateManager.GoToState(this, "Normal", true); };
+        PointerPressed  += (_, _) => VisualStateManager.GoToState(this, "Pressed", true);
+        PointerReleased += (_, _) => VisualStateManager.GoToState(this, _pointerOver ? "PointerOver" : "Normal", true);
+        Tapped += OnTapped;
     }
 
     public string Text
     {
-        get => _text;
-        set
-        {
-            if (_text != value)
-            {
-                _text = value;
-                OnPropertyChanged(nameof(Text));
-            }
-        }
+        get => (string)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
     }
 
     public string Glyph
     {
-        get => _glyph;
-        set
-        {
-            if (_glyph != value)
-            {
-                _glyph = value;
-                OnPropertyChanged(nameof(Glyph));
-            }
-        }
+        get => (string)GetValue(GlyphProperty);
+        set => SetValue(GlyphProperty, value);
     }
 
-    private void OnSideMenuButtonTapped(object sender, TappedRoutedEventArgs e)
+    public bool IsSelected
     {
-        // Raise a custom event or call a method in the parent SideMenu
-        var parent = this.Parent as FrameworkElement;
-        while (parent != null && !(parent is SideMenu))
-        {
+        get => (bool)GetValue(IsSelectedProperty);
+        set => SetValue(IsSelectedProperty, value);
+    }
+
+    private static void OnIsSelectedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var btn = (SideMenuButton)d;
+        VisualStateManager.GoToState(btn, (bool)e.NewValue ? "Selected" : "Unselected", true);
+    }
+
+    private void OnTapped(object sender, TappedRoutedEventArgs e)
+    {
+        var parent = Parent as FrameworkElement;
+        while (parent is not null and not SideMenu)
             parent = parent.Parent as FrameworkElement;
-        }
 
-        if (parent is SideMenu sideMenu)
-        {
-            sideMenu.OnSideMenuButtonClicked(this);
-        }
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    private void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        (parent as SideMenu)?.OnSideMenuButtonClicked(this);
     }
 }

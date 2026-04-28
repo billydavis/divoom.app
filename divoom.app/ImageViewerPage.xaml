@@ -9,61 +9,28 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid Background="#20262d">
-        <Grid.Resources>
-            <Style x:Key="ImageGridViewItemContainerStyle"
-                   TargetType="GridViewItem">
-                <Setter Property="Background" Value="#272d34"/>
-                <Setter Property="Margin" Value="8"/>
-                
-                
-            </Style>
-            <DataTemplate x:Key="ImageGridViewItemTemplate"  x:DataType="local:ImageFileInfo">
-                <Grid 
-                 Height="300"
-                  Width="300"
-                 >
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <Image x:Name="ItemImage"
-                       Source="Assets/StoreLogo.png"
-                       Stretch="None"/>
-
-                    <StackPanel Orientation="Vertical"
-                            Grid.Row="1">
-                        <TextBlock Text="{x:Bind ImageTitle}"
-                               HorizontalAlignment="Center"
-                               Style="{StaticResource SubtitleTextBlockStyle}" />
-                        <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center">
-                            <TextBlock Text="{x:Bind ImageFileType}"
-                                   HorizontalAlignment="Center"
-                                   Style="{StaticResource CaptionTextBlockStyle}" />
-                            <TextBlock Text="{x:Bind ImageDimensions}"
-                                   HorizontalAlignment="Center"
-                                   Style="{StaticResource CaptionTextBlockStyle}"
-                                   Margin="8,0,0,0" />
-                        </StackPanel>
-
-                        <RatingControl Value="{x:Bind ImageRating}" IsReadOnly="True"/>
-                    </StackPanel>
-                </Grid>
-            </DataTemplate>
-            <ItemsPanelTemplate x:Key="ImageGridView_ItemsPanelTemplate">
-                <ItemsWrapGrid Orientation="Horizontal"
-                           HorizontalAlignment="Center"/>
-            </ItemsPanelTemplate>
-        </Grid.Resources>
-        <GridView x:Name="ImageGridView"
-              ItemsSource="{x:Bind Images}"
-              HorizontalAlignment="Center"
-              ItemTemplate="{StaticResource ImageGridViewItemTemplate}"
-              ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
-              ItemContainerStyle="{StaticResource ImageGridViewItemContainerStyle}"
-              ContainerContentChanging="ImageGridView_ContainerContentChanging">
-        </GridView>
-    </Grid>
+    <ScrollViewer>
+        <ItemsRepeater x:Name="ImageRepeater"
+                       ItemsSource="{x:Bind Images}"
+                       Margin="8"
+                       Tapped="ImageRepeater_Tapped">
+            <ItemsRepeater.Layout>
+                <UniformGridLayout MinItemWidth="128"
+                                   MinItemHeight="128"
+                                   MinColumnSpacing="4"
+                                   MinRowSpacing="4" />
+            </ItemsRepeater.Layout>
+            <ItemsRepeater.ItemTemplate>
+                <DataTemplate x:DataType="local:ImageFileInfo">
+                    <Border BorderBrush="{ThemeResource AppAccentBrush}"
+                            BorderThickness="{x:Bind SelectionBorderThickness, Mode=OneWay}">
+                        <Image Width="128"
+                               Height="128"
+                               Source="{x:Bind Source, Mode=OneWay}"
+                               Stretch="UniformToFill" />
+                    </Border>
+                </DataTemplate>
+            </ItemsRepeater.ItemTemplate>
+        </ItemsRepeater>
+    </ScrollViewer>
 </Page>

@@ -1,4 +1,6 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,29 +9,21 @@ using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.Storage.Search;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace divoom.app;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
 public sealed partial class ImageViewerPage : Page
 {
-    public ObservableCollection<ImageFileInfo> Images { get; } =
-        new ObservableCollection<ImageFileInfo>();
+    public ObservableCollection<ImageFileInfo> Images { get; } = new();
+
+    private ImageFileInfo? _selectedImage;
 
     public ImageViewerPage()
     {
-        this.InitializeComponent();
+        InitializeComponent();
         InitializeAsync();
     }
 
-    private async void InitializeAsync()
-    {
-        await GetItemsAsync();
-    }
+    private async void InitializeAsync() => await GetItemsAsync();
 
     private async Task GetItemsAsync()
     {
@@ -37,52 +31,43 @@ public sealed partial class ImageViewerPage : Page
         StorageFolder picturesFolder = await appInstalledFolder.GetFolderAsync("Images");
 
         var result = picturesFolder.CreateFileQueryWithOptions(new QueryOptions());
-
         IReadOnlyList<StorageFile> imageFiles = await result.GetFilesAsync();
         foreach (StorageFile file in imageFiles)
-        {
             Images.Add(await LoadImageInfoAsync(file));
-        }
+    }
 
-        // ImageGridView.ItemsSource = Images;
+    private void ImageRepeater_Tapped(object sender, TappedRoutedEventArgs e)
+    {
+        var element = e.OriginalSource as UIElement;
+        while (element is not null && element != ImageRepeater)
+        {
+            int index = ImageRepeater.GetElementIndex(element);
+            if (index >= 0)
+            {
+                var tapped = Images[index];
+                if (_selectedImage == tapped)
+                {
+                    tapped.IsSelected = false;
+                    _selectedImage = null;
+                }
+                else
+                {
+                    if (_selectedImage is not null)
+                        _selectedImage.IsSelected = false;
+                    tapped.IsSelected = true;
+                    _selectedImage = tapped;
+                }
+                return;
+            }
+            element = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(element) as UIElement;
+        }
     }
 
     public static async Task<ImageFileInfo> LoadImageInfoAsync(StorageFile file)
     {
         var properties = await file.Properties.GetImagePropertiesAsync();
-        ImageFileInfo info = new(properties,
-            file, file.DisplayName, file.DisplayType);
-
+        var info = new ImageFileInfo(properties, file, file.DisplayName, file.DisplayType);
+        info.Source = await info.GetImageSourceAsync();
         return info;
-    }
-
-    private void ImageGridView_ContainerContentChanging(
-        ListViewBase sender,
-        ContainerContentChangingEventArgs args)
-    {
-        if (args.InRecycleQueue)
-        {
-            var templateRoot = args.ItemContainer.ContentTemplateRoot as Grid;
-            var image = templateRoot.FindName("ItemImage") as Image;
-            image.Source = null;
-        }
-
-        if (args.Phase == 0)
-        {
-            args.RegisterUpdateCallback(ShowImage);
-            args.Handled = true;
-        }
-    }
-
-    private async void ShowImage(ListViewBase sender, ContainerContentChangingEventArgs args)
-    {
-        if (args.Phase == 1)
-        {
-            // It's phase 1, so show this item's image.
-            var templateRoot = args.ItemContainer.ContentTemplateRoot as Grid;
-            var image = templateRoot.FindName("ItemImage") as Image;
-            var item = args.Item as ImageFileInfo;
-            image.Source = await item.GetImageThumbnailAsync();
-        }
     }
 }

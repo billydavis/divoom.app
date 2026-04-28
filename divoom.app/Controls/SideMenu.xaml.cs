@@ -1,29 +1,40 @@
 using System;
 using divoom.app.Models;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace divoom.app;
 
 public sealed partial class SideMenu : UserControl
 {
-    public event EventHandler<SideMenuButton> SideMenuButtonClicked;
-
     public event EventHandler<NavigationChangeEvent> NavigationChange;
 
     public SideMenu()
     {
-        this.InitializeComponent();
+        InitializeComponent();
+        Loaded += OnLoaded;
     }
-        
 
-    public void OnSideMenuButtonClicked(SideMenuButton button)
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        // SideMenuButtonClicked?.Invoke(this, button);
-        NavigationChange?.Invoke(this, new NavigationChangeEvent { Page = button.Text });
+        // Select the first nav item by default
+        foreach (UIElement child in RootGrid.Children)
+        {
+            if (child is SideMenuButton first)
+            {
+                OnSideMenuButtonClicked(first);
+                break;
+            }
+        }
     }
 
+    public void OnSideMenuButtonClicked(SideMenuButton clicked)
+    {
+        foreach (UIElement child in RootGrid.Children)
+        {
+            if (child is SideMenuButton btn)
+                btn.IsSelected = btn == clicked;
+        }
+        NavigationChange?.Invoke(this, new NavigationChangeEvent { Page = clicked.Text });
+    }
 }

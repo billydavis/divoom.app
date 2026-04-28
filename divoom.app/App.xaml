@@ -8,9 +8,25 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-                <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
-            <!-- Other app resources here -->
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="AppChromeBrush" Color="#110B0B" />
+                    <SolidColorBrush x:Key="AppSidebarBrush" Color="#1A1111" />
+                    <SolidColorBrush x:Key="AppTitleBarBrush" Color="#231717" />
+                    <SolidColorBrush x:Key="AppAccentBrush" Color="#FF5722" />
+                    <Visibility x:Key="AppIconDarkVisibility">Visible</Visibility>
+                    <Visibility x:Key="AppIconLightVisibility">Collapsed</Visibility>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="AppChromeBrush" Color="#FAFAFA" />
+                    <SolidColorBrush x:Key="AppSidebarBrush" Color="#EFEFEF" />
+                    <SolidColorBrush x:Key="AppTitleBarBrush" Color="#E8E8E8" />
+                    <SolidColorBrush x:Key="AppAccentBrush" Color="#FF5722" />
+                    <Visibility x:Key="AppIconDarkVisibility">Collapsed</Visibility>
+                    <Visibility x:Key="AppIconLightVisibility">Visible</Visibility>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
             <local:HardwareToImageConverter x:Key="HardwareToImageConverter"/>
         </ResourceDictionary>
     </Application.Resources>

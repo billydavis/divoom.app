@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- Monitor body -->
+  <rect x="20" y="24" width="216" height="160" rx="14" ry="14" fill="#1E1E3A"/>
+  <!-- Screen bezel -->
+  <rect x="32" y="36" width="192" height="136" rx="6" ry="6" fill="#0F0F1A"/>
+
+  <!-- Pixel art on screen (8x6 grid, 22px cells, 2px gap) -->
+  <!-- Row 0 -->
+  <rect x="38" y="42" width="20" height="20" rx="2" fill="#FF4D6D"/>
+  <rect x="62" y="42" width="20" height="20" rx="2" fill="#FF4D6D"/>
+  <rect x="86" y="42" width="20" height="20" rx="2" fill="#FF9F1C"/>
+  <rect x="110" y="42" width="20" height="20" rx="2" fill="#FF9F1C"/>
+  <rect x="134" y="42" width="20" height="20" rx="2" fill="#FFBF69"/>
+  <rect x="158" y="42" width="20" height="20" rx="2" fill="#252545"/>
+  <rect x="182" y="42" width="20" height="20" rx="2" fill="#252545"/>
+  <rect x="206" y="42" width="20" height="20" rx="2" fill="#252545"/>
+
+  <!-- Row 1 -->
+  <rect x="38" y="66" width="20" height="20" rx="2" fill="#FF4D6D"/>
+  <rect x="62" y="66" width="20" height="20" rx="2" fill="#FFBF69"/>
+  <rect x="86" y="66" width="20" height="20" rx="2" fill="#FFBF69"/>
+  <rect x="110" y="66" width="20" height="20" rx="2" fill="#2EC4B6"/>
+  <rect x="134" y="66" width="20" height="20" rx="2" fill="#2EC4B6"/>
+  <rect x="158" y="66" width="20" height="20" rx="2" fill="#3A86FF"/>
+  <rect x="182" y="66" width="20" height="20" rx="2" fill="#252545"/>
+  <rect x="206" y="66" width="20" height="20" rx="2" fill="#252545"/>
+
+  <!-- Row 2 -->
+  <rect x="38" y="90" width="20" height="20" rx="2" fill="#252545"/>
+  <rect x="62" y="90" width="20" height="20" rx="2" fill="#FF4D6D"/>
+  <rect x="86" y="90" width="20" height="20" rx="2" fill="#FFBF69"/>
+  <rect x="110" y="90" width="20" height="20" rx="2" fill="#2EC4B6"/>
+  <rect x="134" y="90" width="20" height="20" rx="2" fill="#3A86FF"/>
+  <rect x="158" y="90" width="20" height="20" rx="2" fill="#3A86FF"/>
+  <rect x="182" y="90" width="20" height="20" rx="2" fill="#8338EC"/>
+  <rect x="206" y="90" width="20" height="20" rx="2" fill="#252545"/>
+
+  <!-- Row 3 -->
+  <rect x="38" y="114" width="20" height="20" rx="2" fill="#252545"/>
+  <rect x="62" y="114" width="20" height="20" rx="2" fill="#252545"/>
+  <rect x="86" y="114" width="20" height="20" rx="2" fill="#2EC4B6"/>
+  <rect x="110" y="114" width="20" height="20" rx="2" fill="#2EC4B6"/>
+  <rect x="134" y="114" width="20" height="20" rx="2" fill="#3A86FF"/>
+  <rect x="158" y="114" width="20" height="20" rx="2" fill="#8338EC"/>
+  <rect x="182" y="114" width="20" height="20" rx="2" fill="#8338EC"/>
+  <rect x="206" y="114" width="20" height="20" rx="2" fill="#FF4D6D"/>
+
+  <!-- Row 4 -->
+  <rect x="38" y="138" width="20" height="20" rx="2" fill="#252545"/>
+  <rect x="62" y="138" width="20" height="20" rx="2" fill="#252545"/>
+  <rect x="86" y="138" width="20" height="20" rx="2" fill="#252545"/>
+  <rect x="110" y="138" width="20" height="20" rx="2" fill="#3A86FF"/>
+  <rect x="134" y="138" width="20" height="20" rx="2" fill="#8338EC"/>
+  <rect x="158" y="138" width="20" height="20" rx="2" fill="#8338EC"/>
+  <rect x="182" y="138" width="20" height="20" rx="2" fill="#FF4D6D"/>
+  <rect x="206" y="138" width="20" height="20" rx="2" fill="#FF4D6D"/>
+
+  <!-- Monitor stand neck -->
+  <rect x="112" y="184" width="32" height="24" rx="4" fill="#16162E"/>
+  <!-- Monitor base -->
+  <rect x="80" y="204" width="96" height="14" rx="7" fill="#16162E"/>
+
+  <!-- Screen glow overlay -->
+  <rect x="32" y="36" width="192" height="136" rx="6" ry="6" fill="url(#glow)" opacity="0.12"/>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+  </defs>
+</svg>

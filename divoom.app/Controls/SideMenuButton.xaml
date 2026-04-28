@@ -5,12 +5,92 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Width="68"
+    Margin="0,2">
 
-    <Border Margin="0 3" Tag="{x:Bind Text, Mode=OneWay}">
-        <StackPanel  Orientation="Vertical" Padding="0 6"  HorizontalAlignment="Center"     >
-            <FontIcon  FontFamily="Segoe MDL2 Assets" FontSize="14" Glyph="{x:Bind Glyph, Mode=OneWay}"></FontIcon>
-            <TextBlock  FontSize="9" Text="{x:Bind Text, Mode=OneWay}" Margin="0 3" HorizontalAlignment="Stretch" ></TextBlock>
+    <Grid x:Name="RootGrid" Height="62">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="PointerOver">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverBorder"
+                                                       Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="#18FFFFFF" />
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverBorder"
+                                                       Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="#0CFFFFFF" />
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="SelectionStates">
+                <VisualState x:Name="Unselected" />
+                <VisualState x:Name="Selected">
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AccentBar"
+                                                       Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverBorder"
+                                                       Storyboard.TargetProperty="Background">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="#14FFFFFF" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemIcon"
+                                                       Storyboard.TargetProperty="FontSize">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="26" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemIcon"
+                                                       Storyboard.TargetProperty="Foreground">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemAccentColor}" />
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ItemLabel"
+                                                       Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
+                        </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <!-- Hover / press background -->
+        <Border x:Name="HoverBorder"
+                Margin="4,0"
+                CornerRadius="4"
+                Background="Transparent" />
+
+        <!-- Selected left-edge accent bar -->
+        <Rectangle x:Name="AccentBar"
+                   Width="3"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Stretch"
+                   RadiusX="1.5" RadiusY="1.5"
+                   Fill="{ThemeResource SystemAccentColor}"
+                   Visibility="Collapsed" />
+
+        <!-- Icon + label (not hit-testable so events bubble to root) -->
+        <StackPanel Orientation="Vertical"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsHitTestVisible="False">
+            <FontIcon x:Name="ItemIcon"
+                      FontFamily="Segoe Fluent Icons,Segoe MDL2 Assets"
+                      FontSize="20"
+                      Glyph="{x:Bind Glyph, Mode=OneWay}"
+                      Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                      HorizontalAlignment="Center" />
+            <TextBlock x:Name="ItemLabel"
+                       Text="{x:Bind Text, Mode=OneWay}"
+                       FontSize="11"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       Margin="0,4,0,0"
+                       HorizontalAlignment="Center" />
         </StackPanel>
-    </Border>
+    </Grid>
 </UserControl>

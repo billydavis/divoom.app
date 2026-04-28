@@ -32,8 +32,8 @@ public sealed partial class MainWindow : Window
         var windowManager = WindowManager.Get(this);
         windowManager.Height = 670;
         windowManager.Width = 470;
-        windowManager.IsMaximizable = false; // This hides the Maximize button
-        windowManager.IsResizable = false;
+        windowManager.IsMaximizable = true;
+        windowManager.IsResizable = true;
 
         windowManager.PersistenceId = "divoom.app:MainWindow";
 

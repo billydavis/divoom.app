@@ -86,6 +86,31 @@ public class ImageFileInfo : INotifyPropertyChanged
         }
     }
 
+    private BitmapImage _source;
+    public BitmapImage Source
+    {
+        get => _source;
+        set { _source = value; OnPropertyChanged(); }
+    }
+
+    private bool _isSelected;
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
+        {
+            if (_isSelected != value)
+            {
+                _isSelected = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectionBorderThickness));
+            }
+        }
+    }
+
+    public Microsoft.UI.Xaml.Thickness SelectionBorderThickness =>
+        IsSelected ? new Microsoft.UI.Xaml.Thickness(3) : new Microsoft.UI.Xaml.Thickness(0);
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
