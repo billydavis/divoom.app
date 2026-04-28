@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Divoom Manager — Palette Guide</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: -apple-system, "Segoe UI", sans-serif;
+      padding: 48px 40px;
+    }
+
+    header {
+      margin-bottom: 48px;
+    }
+
+    header h1 {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    header p {
+      font-size: 11px;
+      color: #333;
+      margin-top: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Theme groups ── */
+    .theme-group {
+      margin-bottom: 40px;
+    }
+
+    .theme-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .theme-name {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #3a3a3a;
+    }
+
+    .theme-rule {
+      flex: 1;
+      height: 1px;
+      background: #1e1e1e;
+    }
+
+    .theme-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .variant-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    /* ── Card ── */
+    .card {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #1e1e1e;
+    }
+
+    .card.light {
+      border-color: #d8d8d8;
+    }
+
+    /* ── Preview chrome ── */
+    .preview {
+      height: 140px;
+      position: relative;
+    }
+
+    .titlebar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+    }
+
+    .titlebar-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+
+    .card.light .titlebar-icon {
+      background: rgba(0,0,0,0.12);
+    }
+
+    .titlebar-text {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .card.light .titlebar-text {
+      color: rgba(0,0,0,0.55);
+    }
+
+    .accent-bar {
+      width: 3px;
+      height: 16px;
+      border-radius: 2px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .window-body {
+      position: absolute;
+      top: 36px; bottom: 0; left: 0; right: 0;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 52px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 10px;
+      gap: 8px;
+    }
+
+    .nav-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .card.light .nav-dot {
+      background: rgba(0,0,0,0.06);
+    }
+
+    .content {
+      flex: 1;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      align-content: start;
+    }
+
+    .pixel-thumb {
+      aspect-ratio: 1;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .card.light .pixel-thumb {
+      background: rgba(0,0,0,0.05);
+    }
+
+    /* ── Info panel ── */
+    .info {
+      padding: 16px 18px 18px;
+      background: #111;
+    }
+
+    .card.light .info {
+      background: #f7f7f7;
+    }
+
+    .palette-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 3px;
+      color: #e8e8e8;
+    }
+
+    .card.light .palette-name {
+      color: #111;
+    }
+
+    .palette-desc {
+      font-size: 11px;
+      color: #555;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .card.light .palette-desc {
+      color: #888;
+    }
+
+    /* ── Swatches ── */
+    .swatches {
+      display: flex;
+      gap: 6px;
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex: 1;
+    }
+
+    .swatch-color {
+      width: 100%;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .card.light .swatch-color {
+      border-color: rgba(0,0,0,0.08);
+    }
+
+    .swatch-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #444;
+      text-align: center;
+    }
+
+    .card.light .swatch-label {
+      color: #aaa;
+    }
+
+    .swatch-hex {
+      font-size: 9.5px;
+      color: #666;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+    }
+
+    .card.light .swatch-hex {
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Divoom Manager · Theme Palette Guide</h1>
+    <p>4 themes · dark &amp; light</p>
+  </header>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- 1. SLATE                                -->
+  <!-- Blue-gray neutral · calm professional  -->
+  <!-- ════════════════════════════════════════ -->
+  <div class="theme-group">
+    <div class="theme-header">
+      <span class="theme-name">Slate</span>
+      <div class="theme-rule"></div>
+    </div>
+    <div class="theme-pair">
+
+      <!-- Dark -->
+      <div>
+        <div class="variant-label">Dark</div>
+        <div class="card">
+          <div class="preview" style="background:#161B22;">
+            <div class="titlebar" style="background:#21262D;">
+              <div class="titlebar-icon"></div>
+              <span class="titlebar-text">Divoom Manager</span>
+              <div class="accent-bar" style="background:#58A6FF;"></div>
+            </div>
+            <div class="window-body">
+              <div class="sidebar" style="background:#0D1117;">
+                <div class="nav-dot" style="background:rgba(88,166,255,0.25);"></div>
+                <div class="nav-dot"></div>
+                <div class="nav-dot"></div>
+              </div>
+              <div class="content" style="background:#0D1117;">
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb" style="border:2px solid #58A6FF;"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+              </div>
+            </div>
+          </div>
+          <div class="info">
+            <div class="palette-name">Slate Dark</div>
+            <div class="palette-desc">Blue-gray neutrals. Calm, focused, developer-grade.</div>
+            <div class="swatches">
+              <div class="swatch">
+                <div class="swatch-color" style="background:#0D1117;"></div>
+                <div class="swatch-label">Content</div>
+                <div class="swatch-hex">#0D1117</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#161B22;"></div>
+                <div class="swatch-label">Sidebar</div>
+                <div class="swatch-hex">#161B22</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#21262D;"></div>
+                <div class="swatch-label">Title Bar</div>
+                <div class="swatch-hex">#21262D</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#58A6FF;border-color:transparent;"></div>
+                <div class="swatch-label">Accent</div>
+                <div class="swatch-hex">#58A6FF</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light -->
+      <div>
+        <div class="variant-label">Light</div>
+        <div class="card light">
+          <div class="preview" style="background:#F6F8FA;">
+            <div class="titlebar" style="background:#EAEEF2;">
+              <div class="titlebar-icon"></div>
+              <span class="titlebar-text">Divoom Manager</span>
+              <div class="accent-bar" style="background:#0969DA;"></div>
+            </div>
+            <div class="window-body">
+              <div class="sidebar" style="background:#FFFFFF;">
+                <div class="nav-dot" style="background:rgba(9,105,218,0.12);"></div>
+                <div class="nav-dot"></div>
+                <div class="nav-dot"></div>
+              </div>
+              <div class="content" style="background:#FFFFFF;">
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb" style="border:2px solid #0969DA;"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+              </div>
+            </div>
+          </div>
+          <div class="info">
+            <div class="palette-name">Slate Light</div>
+            <div class="palette-desc">Crisp whites and cool grays. Clean, airy, precise.</div>
+            <div class="swatches">
+              <div class="swatch">
+                <div class="swatch-color" style="background:#FFFFFF;"></div>
+                <div class="swatch-label">Content</div>
+                <div class="swatch-hex">#FFFFFF</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#F6F8FA;"></div>
+                <div class="swatch-label">Sidebar</div>
+                <div class="swatch-hex">#F6F8FA</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#EAEEF2;"></div>
+                <div class="swatch-label">Title Bar</div>
+                <div class="swatch-hex">#EAEEF2</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#0969DA;border-color:transparent;"></div>
+                <div class="swatch-label">Accent</div>
+                <div class="swatch-hex">#0969DA</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- 2. AMBER                                -->
+  <!-- Warm gold · premium, editorial         -->
+  <!-- ════════════════════════════════════════ -->
+  <div class="theme-group">
+    <div class="theme-header">
+      <span class="theme-name">Amber</span>
+      <div class="theme-rule"></div>
+    </div>
+    <div class="theme-pair">
+
+      <!-- Dark -->
+      <div>
+        <div class="variant-label">Dark</div>
+        <div class="card">
+          <div class="preview" style="background:#1A1500;">
+            <div class="titlebar" style="background:#241D00;">
+              <div class="titlebar-icon"></div>
+              <span class="titlebar-text">Divoom Manager</span>
+              <div class="accent-bar" style="background:#E6A817;"></div>
+            </div>
+            <div class="window-body">
+              <div class="sidebar" style="background:#110E00;">
+                <div class="nav-dot" style="background:rgba(230,168,23,0.22);"></div>
+                <div class="nav-dot"></div>
+                <div class="nav-dot"></div>
+              </div>
+              <div class="content" style="background:#110E00;">
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb" style="border:2px solid #E6A817;"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+              </div>
+            </div>
+          </div>
+          <div class="info">
+            <div class="palette-name">Amber Dark</div>
+            <div class="palette-desc">Deep warm blacks with gold. Rich, editorial, refined.</div>
+            <div class="swatches">
+              <div class="swatch">
+                <div class="swatch-color" style="background:#110E00;"></div>
+                <div class="swatch-label">Content</div>
+                <div class="swatch-hex">#110E00</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#1A1500;"></div>
+                <div class="swatch-label">Sidebar</div>
+                <div class="swatch-hex">#1A1500</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#241D00;"></div>
+                <div class="swatch-label">Title Bar</div>
+                <div class="swatch-hex">#241D00</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#E6A817;border-color:transparent;"></div>
+                <div class="swatch-label">Accent</div>
+                <div class="swatch-hex">#E6A817</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light -->
+      <div>
+        <div class="variant-label">Light</div>
+        <div class="card light">
+          <div class="preview" style="background:#FBF6E9;">
+            <div class="titlebar" style="background:#F0E8D0;">
+              <div class="titlebar-icon"></div>
+              <span class="titlebar-text">Divoom Manager</span>
+              <div class="accent-bar" style="background:#9A6C00;"></div>
+            </div>
+            <div class="window-body">
+              <div class="sidebar" style="background:#FFFDF5;">
+                <div class="nav-dot" style="background:rgba(154,108,0,0.12);"></div>
+                <div class="nav-dot"></div>
+                <div class="nav-dot"></div>
+              </div>
+              <div class="content" style="background:#FFFDF5;">
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb" style="border:2px solid #9A6C00;"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+              </div>
+            </div>
+          </div>
+          <div class="info">
+            <div class="palette-name">Amber Light</div>
+            <div class="palette-desc">Warm cream and parchment tones. Inviting, premium.</div>
+            <div class="swatches">
+              <div class="swatch">
+                <div class="swatch-color" style="background:#FFFDF5;"></div>
+                <div class="swatch-label">Content</div>
+                <div class="swatch-hex">#FFFDF5</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#FBF6E9;"></div>
+                <div class="swatch-label">Sidebar</div>
+                <div class="swatch-hex">#FBF6E9</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#F0E8D0;"></div>
+                <div class="swatch-label">Title Bar</div>
+                <div class="swatch-hex">#F0E8D0</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#9A6C00;border-color:transparent;"></div>
+                <div class="swatch-label">Accent</div>
+                <div class="swatch-hex">#9A6C00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- 3. SAGE                                 -->
+  <!-- Muted green · calm, grounded           -->
+  <!-- ════════════════════════════════════════ -->
+  <div class="theme-group">
+    <div class="theme-header">
+      <span class="theme-name">Sage</span>
+      <div class="theme-rule"></div>
+    </div>
+    <div class="theme-pair">
+
+      <!-- Dark -->
+      <div>
+        <div class="variant-label">Dark</div>
+        <div class="card">
+          <div class="preview" style="background:#0F1A14;">
+            <div class="titlebar" style="background:#17261C;">
+              <div class="titlebar-icon"></div>
+              <span class="titlebar-text">Divoom Manager</span>
+              <div class="accent-bar" style="background:#2DB88A;"></div>
+            </div>
+            <div class="window-body">
+              <div class="sidebar" style="background:#09110C;">
+                <div class="nav-dot" style="background:rgba(45,184,138,0.22);"></div>
+                <div class="nav-dot"></div>
+                <div class="nav-dot"></div>
+              </div>
+              <div class="content" style="background:#09110C;">
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb" style="border:2px solid #2DB88A;"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+              </div>
+            </div>
+          </div>
+          <div class="info">
+            <div class="palette-name">Sage Dark</div>
+            <div class="palette-desc">Deep forest greens. Grounded, balanced, focused.</div>
+            <div class="swatches">
+              <div class="swatch">
+                <div class="swatch-color" style="background:#09110C;"></div>
+                <div class="swatch-label">Content</div>
+                <div class="swatch-hex">#09110C</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#0F1A14;"></div>
+                <div class="swatch-label">Sidebar</div>
+                <div class="swatch-hex">#0F1A14</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#17261C;"></div>
+                <div class="swatch-label">Title Bar</div>
+                <div class="swatch-hex">#17261C</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#2DB88A;border-color:transparent;"></div>
+                <div class="swatch-label">Accent</div>
+                <div class="swatch-hex">#2DB88A</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light -->
+      <div>
+        <div class="variant-label">Light</div>
+        <div class="card light">
+          <div class="preview" style="background:#F0F7F3;">
+            <div class="titlebar" style="background:#DFF0E8;">
+              <div class="titlebar-icon"></div>
+              <span class="titlebar-text">Divoom Manager</span>
+              <div class="accent-bar" style="background:#0F7A57;"></div>
+            </div>
+            <div class="window-body">
+              <div class="sidebar" style="background:#FFFFFF;">
+                <div class="nav-dot" style="background:rgba(15,122,87,0.1);"></div>
+                <div class="nav-dot"></div>
+                <div class="nav-dot"></div>
+              </div>
+              <div class="content" style="background:#FFFFFF;">
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb" style="border:2px solid #0F7A57;"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+              </div>
+            </div>
+          </div>
+          <div class="info">
+            <div class="palette-name">Sage Light</div>
+            <div class="palette-desc">Soft mint and white. Open, fresh, approachable.</div>
+            <div class="swatches">
+              <div class="swatch">
+                <div class="swatch-color" style="background:#FFFFFF;"></div>
+                <div class="swatch-label">Content</div>
+                <div class="swatch-hex">#FFFFFF</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#F0F7F3;"></div>
+                <div class="swatch-label">Sidebar</div>
+                <div class="swatch-hex">#F0F7F3</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#DFF0E8;"></div>
+                <div class="swatch-label">Title Bar</div>
+                <div class="swatch-hex">#DFF0E8</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#0F7A57;border-color:transparent;"></div>
+                <div class="swatch-label">Accent</div>
+                <div class="swatch-hex">#0F7A57</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- 4. CARBON                               -->
+  <!-- Pure neutral · high-contrast, stark    -->
+  <!-- ════════════════════════════════════════ -->
+  <div class="theme-group">
+    <div class="theme-header">
+      <span class="theme-name">Carbon</span>
+      <div class="theme-rule"></div>
+    </div>
+    <div class="theme-pair">
+
+      <!-- Dark -->
+      <div>
+        <div class="variant-label">Dark</div>
+        <div class="card">
+          <div class="preview" style="background:#141414;">
+            <div class="titlebar" style="background:#1C1C1C;">
+              <div class="titlebar-icon"></div>
+              <span class="titlebar-text">Divoom Manager</span>
+              <div class="accent-bar" style="background:#5B8AF5;"></div>
+            </div>
+            <div class="window-body">
+              <div class="sidebar" style="background:#0A0A0A;">
+                <div class="nav-dot" style="background:rgba(91,138,245,0.22);"></div>
+                <div class="nav-dot"></div>
+                <div class="nav-dot"></div>
+              </div>
+              <div class="content" style="background:#0A0A0A;">
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb" style="border:2px solid #5B8AF5;"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+              </div>
+            </div>
+          </div>
+          <div class="info">
+            <div class="palette-name">Carbon Dark</div>
+            <div class="palette-desc">Pure black neutrals with an indigo accent. Stark, precise.</div>
+            <div class="swatches">
+              <div class="swatch">
+                <div class="swatch-color" style="background:#0A0A0A;"></div>
+                <div class="swatch-label">Content</div>
+                <div class="swatch-hex">#0A0A0A</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#141414;"></div>
+                <div class="swatch-label">Sidebar</div>
+                <div class="swatch-hex">#141414</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#1C1C1C;"></div>
+                <div class="swatch-label">Title Bar</div>
+                <div class="swatch-hex">#1C1C1C</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#5B8AF5;border-color:transparent;"></div>
+                <div class="swatch-label">Accent</div>
+                <div class="swatch-hex">#5B8AF5</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Light -->
+      <div>
+        <div class="variant-label">Light</div>
+        <div class="card light">
+          <div class="preview" style="background:#F5F5F5;">
+            <div class="titlebar" style="background:#EBEBEB;">
+              <div class="titlebar-icon"></div>
+              <span class="titlebar-text">Divoom Manager</span>
+              <div class="accent-bar" style="background:#2952C8;"></div>
+            </div>
+            <div class="window-body">
+              <div class="sidebar" style="background:#FFFFFF;">
+                <div class="nav-dot" style="background:rgba(41,82,200,0.1);"></div>
+                <div class="nav-dot"></div>
+                <div class="nav-dot"></div>
+              </div>
+              <div class="content" style="background:#FFFFFF;">
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb" style="border:2px solid #2952C8;"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+                <div class="pixel-thumb"></div>
+              </div>
+            </div>
+          </div>
+          <div class="info">
+            <div class="palette-name">Carbon Light</div>
+            <div class="palette-desc">Bright whites and cool grays. Minimal, high-contrast.</div>
+            <div class="swatches">
+              <div class="swatch">
+                <div class="swatch-color" style="background:#FFFFFF;"></div>
+                <div class="swatch-label">Content</div>
+                <div class="swatch-hex">#FFFFFF</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#F5F5F5;"></div>
+                <div class="swatch-label">Sidebar</div>
+                <div class="swatch-hex">#F5F5F5</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#EBEBEB;"></div>
+                <div class="swatch-label">Title Bar</div>
+                <div class="swatch-hex">#EBEBEB</div>
+              </div>
+              <div class="swatch">
+                <div class="swatch-color" style="background:#2952C8;border-color:transparent;"></div>
+                <div class="swatch-label">Accent</div>
+                <div class="swatch-hex">#2952C8</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

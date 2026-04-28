@@ -1,4 +1,5 @@
 using divoom.app.Models;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
@@ -26,6 +27,8 @@ public sealed partial class MainWindow : Window
         {
             ExtendsContentIntoTitleBar = true;
             AppWindow.TitleBar.PreferredHeightOption = Microsoft.UI.Windowing.TitleBarHeightOption.Tall;
+            UpdateTitleBarButtonColors();
+            ((FrameworkElement)Content).ActualThemeChanged += (_, _) => UpdateTitleBarButtonColors();
         }
 
         
@@ -41,6 +44,34 @@ public sealed partial class MainWindow : Window
         SideMenu_OnNavigationChange(this, new NavigationChangeEvent { Page = "Devices" });
     }
         
+    private void UpdateTitleBarButtonColors()
+    {
+        var titleBar = AppWindow.TitleBar;
+        bool isDark = ((FrameworkElement)Content).ActualTheme == ElementTheme.Dark;
+
+        titleBar.ButtonBackgroundColor         = Colors.Transparent;
+        titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+
+        if (isDark)
+        {
+            titleBar.ButtonForegroundColor        = Windows.UI.Color.FromArgb(0xFF, 0xE6, 0xED, 0xF3);
+            titleBar.ButtonHoverForegroundColor   = Windows.UI.Color.FromArgb(0xFF, 0xE6, 0xED, 0xF3);
+            titleBar.ButtonHoverBackgroundColor   = Windows.UI.Color.FromArgb(0xFF, 0x2D, 0x33, 0x3B);
+            titleBar.ButtonPressedForegroundColor = Windows.UI.Color.FromArgb(0xFF, 0xE6, 0xED, 0xF3);
+            titleBar.ButtonPressedBackgroundColor = Windows.UI.Color.FromArgb(0xFF, 0x25, 0x2D, 0x37);
+            titleBar.ButtonInactiveForegroundColor = Windows.UI.Color.FromArgb(0x66, 0xE6, 0xED, 0xF3);
+        }
+        else
+        {
+            titleBar.ButtonForegroundColor        = Windows.UI.Color.FromArgb(0xFF, 0x1F, 0x23, 0x28);
+            titleBar.ButtonHoverForegroundColor   = Windows.UI.Color.FromArgb(0xFF, 0x1F, 0x23, 0x28);
+            titleBar.ButtonHoverBackgroundColor   = Windows.UI.Color.FromArgb(0xFF, 0xD1, 0xD6, 0xDC);
+            titleBar.ButtonPressedForegroundColor = Windows.UI.Color.FromArgb(0xFF, 0x1F, 0x23, 0x28);
+            titleBar.ButtonPressedBackgroundColor = Windows.UI.Color.FromArgb(0xFF, 0xC4, 0xC9, 0xCF);
+            titleBar.ButtonInactiveForegroundColor = Windows.UI.Color.FromArgb(0x66, 0x1F, 0x23, 0x28);
+        }
+    }
+
     private void SideMenu_OnNavigationChange(object? sender, NavigationChangeEvent e)
     {
         Page page = null;
