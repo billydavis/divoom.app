@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -19,8 +20,10 @@
 
         <app:SideMenuButton Grid.Row="0" Text="Devices"  Glyph="&#xE7F4;" />
         <app:SideMenuButton Grid.Row="1" Text="Images"   Glyph="&#xE8A1;" />
+        <app:SideMenuButton Grid.Row="2" Text="Create"
+            PathData="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594Z M19 2L21 2L21 6L19 6Z M18 3L22 3L22 5L18 5Z M2 20a2 2 0 1 0 4 0a2 2 0 1 0-4 0Z" />
 
-        <app:SideMenuButton Grid.Row="3" Text="Settings"  Glyph="&#xE713;"  />
-        <app:SideMenuButton Grid.Row="4" Text="Feedback"  Glyph="&#xED15;"  />
+        <app:SideMenuButton Grid.Row="4" Text="Settings"  Glyph="&#xE713;"  />
+        <app:SideMenuButton Grid.Row="5" Text="Feedback"  Glyph="&#xED15;"  />
     </Grid>
 </UserControl>

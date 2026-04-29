@@ -92,6 +92,13 @@ public sealed partial class MainWindow : Window
                     _pages["Images"] = page;
                 }
                 break;
+            case "Create":
+                if (!_pages.TryGetValue("Create", out page))
+                {
+                    page = new CreateImagePage();
+                    _pages["Create"] = page;
+                }
+                break;
             default:
                 if (!_pages.TryGetValue("ComingSoon", out page))
                 {

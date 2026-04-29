@@ -28,11 +28,14 @@
                 <VisualState x:Name="Unselected" />
                 <VisualState x:Name="Selected">
                     <VisualState.Setters>
-                        <Setter Target="AccentBar.Visibility"   Value="Visible" />
-                        <Setter Target="HoverBorder.Background" Value="{ThemeResource AppNavSelectedBrush}" />
-                        <Setter Target="ItemIcon.FontSize"      Value="26" />
-                        <Setter Target="ItemIcon.Foreground"    Value="{ThemeResource AppAccentBrush}" />
-                        <Setter Target="ItemLabel.Visibility"   Value="Collapsed" />
+                        <Setter Target="AccentBar.Visibility"      Value="Visible" />
+                        <Setter Target="HoverBorder.Background"    Value="{ThemeResource AppNavSelectedBrush}" />
+                        <Setter Target="ItemIcon.FontSize"         Value="26" />
+                        <Setter Target="ItemIcon.Foreground"       Value="{ThemeResource AppAccentBrush}" />
+                        <Setter Target="ItemPathIcon.Width"        Value="26" />
+                        <Setter Target="ItemPathIcon.Height"       Value="26" />
+                        <Setter Target="ItemPathIcon.Foreground"   Value="{ThemeResource AppAccentBrush}" />
+                        <Setter Target="ItemLabel.Visibility"      Value="Collapsed" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -64,6 +67,11 @@
                       Glyph="{x:Bind Glyph, Mode=OneWay}"
                       Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                       HorizontalAlignment="Center" />
+            <PathIcon x:Name="ItemPathIcon"
+                      Width="20" Height="20"
+                      Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                      HorizontalAlignment="Center"
+                      Visibility="Collapsed" />
             <TextBlock x:Name="ItemLabel"
                        Text="{x:Bind Text, Mode=OneWay}"
                        FontSize="11"

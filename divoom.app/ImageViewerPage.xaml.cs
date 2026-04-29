@@ -27,13 +27,21 @@ public sealed partial class ImageViewerPage : Page
 
     private async Task GetItemsAsync()
     {
-        StorageFolder appInstalledFolder = Package.Current.InstalledLocation;
-        StorageFolder picturesFolder = await appInstalledFolder.GetFolderAsync("Images");
+        try
+        {
+            StorageFolder installedFolder = await Package.Current.InstalledLocation.GetFolderAsync("Images");
+            foreach (StorageFile file in await installedFolder.CreateFileQueryWithOptions(new QueryOptions()).GetFilesAsync())
+                Images.Add(await LoadImageInfoAsync(file));
+        }
+        catch (Exception) { }
 
-        var result = picturesFolder.CreateFileQueryWithOptions(new QueryOptions());
-        IReadOnlyList<StorageFile> imageFiles = await result.GetFilesAsync();
-        foreach (StorageFile file in imageFiles)
-            Images.Add(await LoadImageInfoAsync(file));
+        try
+        {
+            StorageFolder generatedFolder = await ApplicationData.Current.LocalFolder.GetFolderAsync("Images");
+            foreach (StorageFile file in await generatedFolder.CreateFileQueryWithOptions(new QueryOptions()).GetFilesAsync())
+                Images.Add(await LoadImageInfoAsync(file));
+        }
+        catch (Exception) { }
     }
 
     private void ImageRepeater_Tapped(object sender, TappedRoutedEventArgs e)

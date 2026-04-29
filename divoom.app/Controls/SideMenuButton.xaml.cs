@@ -1,6 +1,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 
 namespace divoom.app;
 
@@ -14,6 +16,10 @@ public sealed partial class SideMenuButton : UserControl
         DependencyProperty.Register(nameof(Glyph), typeof(string), typeof(SideMenuButton),
             new PropertyMetadata(string.Empty));
 
+
+    public static readonly DependencyProperty PathDataProperty =
+        DependencyProperty.Register(nameof(PathData), typeof(string), typeof(SideMenuButton),
+            new PropertyMetadata(string.Empty));
 
     public static readonly DependencyProperty IsSelectedProperty =
         DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(SideMenuButton),
@@ -29,6 +35,15 @@ public sealed partial class SideMenuButton : UserControl
         PointerPressed  += (_, _) => VisualStateManager.GoToState(this, "Pressed", true);
         PointerReleased += (_, _) => VisualStateManager.GoToState(this, _pointerOver ? "PointerOver" : "Normal", true);
         Tapped += OnTapped;
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(PathData)) return;
+        ItemPathIcon.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), PathData);
+        ItemIcon.Visibility = Visibility.Collapsed;
+        ItemPathIcon.Visibility = Visibility.Visible;
     }
 
     public string Text
@@ -41,6 +56,12 @@ public sealed partial class SideMenuButton : UserControl
     {
         get => (string)GetValue(GlyphProperty);
         set => SetValue(GlyphProperty, value);
+    }
+
+    public string PathData
+    {
+        get => (string)GetValue(PathDataProperty);
+        set => SetValue(PathDataProperty, value);
     }
 
     public bool IsSelected
