@@ -12,6 +12,24 @@ public static class AppSettings
     private const string KeyExtraFolderTokens = "Settings_ExtraFolderTokens";
     private const string KeyGlobalPromptInstructions = "Settings_GlobalPromptInstructions";
     private const string KeyProviderInstructionsPrefix = "Settings_ProviderInstructions_";
+    private const string KeyLastSelectedMac = "Settings_LastSelectedMac";
+    private const string KeyLastSelectedChannel = "Settings_LastSelectedChannel";
+
+    public static string? LastSelectedMac
+    {
+        get => _settings.Values[KeyLastSelectedMac] as string;
+        set
+        {
+            if (value is null) _settings.Values.Remove(KeyLastSelectedMac);
+            else _settings.Values[KeyLastSelectedMac] = value;
+        }
+    }
+
+    public static int LastSelectedChannel
+    {
+        get => int.TryParse(_settings.Values[KeyLastSelectedChannel] as string, out int ch) ? ch : 0;
+        set => _settings.Values[KeyLastSelectedChannel] = value.ToString();
+    }
 
     public static bool ProbeOnStartup
     {

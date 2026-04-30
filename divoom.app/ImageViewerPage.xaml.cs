@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -24,6 +23,26 @@ public sealed partial class ImageViewerPage : Page
         InitializeComponent();
         InitializeAsync();
         CreateImagePage.ImageSaved += OnImageSaved;
+        AppState.SelectionChanged += OnSelectionChanged;
+        UpdateTargetBar();
+    }
+
+    private void OnSelectionChanged()
+    {
+        DispatcherQueue.TryEnqueue(UpdateTargetBar);
+    }
+
+    private void UpdateTargetBar()
+    {
+        var dev = AppState.SelectedDevice;
+        if (dev is null)
+        {
+            SendTargetText.Text = "No target selected — go to Devices to select one";
+            return;
+        }
+        SendTargetText.Text = dev.HasMultipleChannels
+            ? $"{dev.Name}  ·  Screen {AppState.EffectiveChannel + 1}"
+            : dev.Name;
     }
 
     private async void OnImageSaved(StorageFile file)

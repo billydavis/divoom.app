@@ -16,43 +16,97 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!-- Header -->
         <Grid Grid.Row="0" Padding="18,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Devices" FontSize="20" VerticalAlignment="Center" />
-            <Button Grid.Column="1" x:Name="ScanButton"
-                    Content="Scan"
+
+            <TextBlock Grid.Column="0"
+                       Text="Devices"
+                       FontSize="20"
+                       VerticalAlignment="Center" />
+
+            <Button Grid.Column="1"
+                    x:Name="ScanButton"
                     VerticalAlignment="Center"
-                    Click="ScanButton_Click" />
+                    IsEnabled="{x:Bind IsNotScanning, Mode=OneWay}"
+                    Click="ScanButton_Click">
+                <Grid>
+                    <TextBlock Text="Scan"
+                               Visibility="{x:Bind ScanButtonTextVisibility, Mode=OneWay}" />
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8"
+                                Visibility="{x:Bind ScanningIndicatorVisibility, Mode=OneWay}">
+                        <ProgressRing Width="16" Height="16" IsActive="True" />
+                        <TextBlock Text="Scanning…" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+            </Button>
         </Grid>
 
-        
-       <ScrollViewer Grid.Row="1">
-            <Grid>
-                <Grid.Resources>
-                    <Style x:Key="DevicesGridStyle"
-                           TargetType="GridViewItem">
-                        <Setter Property="Margin" Value="0 8"/>
-                    </Style>
-                    <DataTemplate x:Key="DeviceGridViewTemplate" x:DataType="models:DeviceViewModel">
-                        <local:DivoomButton Device="{x:Bind}"></local:DivoomButton>
-                    </DataTemplate>
-                    <ItemsPanelTemplate x:Key="DevicesPanelTemplate">
-                        <ItemsWrapGrid Orientation="Vertical"
-                                       HorizontalAlignment="Center"/>
-                    </ItemsPanelTemplate>
-                </Grid.Resources>
-                <GridView x:Name="DevicesGridView"
-                          ItemsSource="{x:Bind Devices}"
-                          HorizontalAlignment="Center"
-                          ItemTemplate="{StaticResource DeviceGridViewTemplate}"
-                          ItemsPanel="{StaticResource DevicesPanelTemplate}"
-                          ItemContainerStyle="{StaticResource DevicesGridStyle}"
-                          ContainerContentChanging="DevicesGridContainerContentChanging">
-                </GridView>
+        <!-- Device list -->
+        <ScrollViewer Grid.Row="1"
+                      Visibility="{x:Bind DeviceListVisibility, Mode=OneWay}"
+                      HorizontalScrollBarVisibility="Disabled">
+            <Grid HorizontalAlignment="Stretch"
+                  MaxWidth="680"
+                  Padding="18,12,18,18">
+                <ItemsControl x:Name="DevicesList"
+                              ItemsSource="{x:Bind Devices}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="8" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:DeviceViewModel">
+                            <local:DivoomButton Device="{x:Bind}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
-       </ScrollViewer>
+        </ScrollViewer>
+
+        <!-- Scanning placeholder -->
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="14"
+                    Visibility="{x:Bind ScanningPlaceholderVisibility, Mode=OneWay}">
+            <ProgressRing Width="40" Height="40" IsActive="True" />
+            <TextBlock Text="Scanning network…"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        </StackPanel>
+
+        <!-- Empty state -->
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="10"
+                    Visibility="{x:Bind EmptyStateVisibility, Mode=OneWay}">
+            <FontIcon Glyph="&#xE968;"
+                      FontSize="48"
+                      HorizontalAlignment="Center"
+                      Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <TextBlock Text="No devices found"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center"
+                       Margin="0,4,0,0" />
+            <TextBlock Text="Make sure your Divoom devices are on the same&#10;network as this computer, then scan again."
+                       FontSize="13"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Button Content="Scan Network"
+                    HorizontalAlignment="Center"
+                    Click="ScanButton_Click"
+                    Margin="0,6,0,0" />
+        </StackPanel>
+
     </Grid>
 </Page>

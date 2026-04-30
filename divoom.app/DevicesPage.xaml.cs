@@ -1,77 +1,132 @@
 using Divoom;
+using divoom.app.Models;
 using divoom.app.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using divoom.app.Models;
-using Divoom.Models;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace divoom.app;
 
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
-public sealed partial class DevicesPage : Page
+public sealed partial class DevicesPage : Page, INotifyPropertyChanged
 {
-    public ObservableCollection<DeviceViewModel> Devices { get; } =
-        new ObservableCollection<DeviceViewModel>();
+    public ObservableCollection<DeviceViewModel> Devices { get; } = new();
+
+    private bool _isScanning;
+    public bool IsScanning
+    {
+        get => _isScanning;
+        private set
+        {
+            _isScanning = value;
+            OnPropertyChanged(nameof(IsScanning));
+            OnPropertyChanged(nameof(IsNotScanning));
+            OnPropertyChanged(nameof(ScanButtonTextVisibility));
+            OnPropertyChanged(nameof(ScanningIndicatorVisibility));
+            OnPropertyChanged(nameof(ScanningPlaceholderVisibility));
+            OnPropertyChanged(nameof(EmptyStateVisibility));
+            OnPropertyChanged(nameof(DeviceListVisibility));
+        }
+    }
+
+    public bool IsNotScanning => !_isScanning;
+    public Visibility ScanButtonTextVisibility      => _isScanning ? Visibility.Collapsed : Visibility.Visible;
+    public Visibility ScanningIndicatorVisibility   => _isScanning ? Visibility.Visible   : Visibility.Collapsed;
+    public Visibility ScanningPlaceholderVisibility => _isScanning && Devices.Count == 0  ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility EmptyStateVisibility          => !_isScanning && Devices.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility DeviceListVisibility          => Devices.Count > 0                  ? Visibility.Visible : Visibility.Collapsed;
+
+    private bool _isFirstScan = true;
 
     public DevicesPage()
     {
         this.InitializeComponent();
+        Devices.CollectionChanged += (_, _) => NotifyDeviceCountChanged();
+        DivoomButton.RemoveRequested += OnDeviceRemoveRequested;
 
         if (AppSettings.ProbeOnStartup)
-            LoadDevices();
-            
+            _ = ScanAsync();
     }
 
-    private async void  LoadDevices()
+    private void NotifyDeviceCountChanged()
     {
+        OnPropertyChanged(nameof(ScanningPlaceholderVisibility));
+        OnPropertyChanged(nameof(EmptyStateVisibility));
+        OnPropertyChanged(nameof(DeviceListVisibility));
+    }
+
+    private async void ScanButton_Click(object sender, RoutedEventArgs e) => await ScanAsync();
+
+    private async System.Threading.Tasks.Task ScanAsync()
+    {
+        if (_isScanning) return;
+        IsScanning = true;
+
+        // Load persisted devices on first scan (shows them as offline immediately)
+        if (Devices.Count == 0)
+        {
+            var saved = await DeviceStore.LoadAsync();
+            foreach (var d in saved)
+            {
+                d.IsOnline = false;
+                Devices.Add(d);
+            }
+        }
+
         try
         {
-            var devices = await Service.FindDevices();
-            foreach (var device in devices)
+            var found = await Service.FindDevices();
+            foreach (var info in found)
             {
-                
-                    Devices.Add(new DeviceViewModel(device));
-              
+                var existing = Devices.FirstOrDefault(d =>
+                    !string.IsNullOrEmpty(d.MacAddress) &&
+                    d.MacAddress == info.MacAddress);
+
+                if (existing is not null)
+                {
+                    existing.IpAddress = info.IpAddress ?? existing.IpAddress;
+                    existing.IsOnline = true;
+                }
+                else
+                {
+                    Devices.Add(new DeviceViewModel(info) { IsOnline = true });
+                }
             }
-
-            Console.WriteLine($"Found {Devices.Count} devices");
         }
-        catch
+        catch { }
+        finally
         {
-            Console.WriteLine("No devices found");
+            IsScanning = false;
+            await DeviceStore.SaveAsync(Devices);
+
+            // Restore last selection on startup only, not on manual re-scans
+            if (_isFirstScan)
+            {
+                _isFirstScan = false;
+                var lastMac = AppSettings.LastSelectedMac;
+                if (lastMac is not null && AppState.SelectedDevice is null)
+                {
+                    var match = Devices.FirstOrDefault(d => d.MacAddress == lastMac);
+                    if (match is not null)
+                    {
+                        match.SelectedChannel = AppSettings.LastSelectedChannel;
+                        AppState.SelectDevice(match);
+                    }
+                }
+            }
         }
     }
 
-    private void ScanButton_Click(object sender, RoutedEventArgs e)
+    private async void OnDeviceRemoveRequested(DeviceViewModel device)
     {
-        Devices.Clear();
-        LoadDevices();
+        if (AppState.SelectedDevice == device)
+            AppState.SelectDevice(null);
+        Devices.Remove(device);
+        await DeviceStore.SaveAsync(Devices);
     }
 
-    private void DevicesGridContainerContentChanging(
-        ListViewBase sender,
-        ContainerContentChangingEventArgs args)
-    {
-        if (args.InRecycleQueue)
-        {
-            // var templateRoot = args.ItemContainer.ContentTemplateRoot as Grid;
-            // var image = templateRoot.FindName("ItemImage") as Image;
-            // image.Source = null;
-        }
-
-        if (args.Phase == 0)
-        {
-            // args.RegisterUpdateCallback(ShowImage);
-            args.Handled = true;
-        }
-    }
-
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void OnPropertyChanged(string name) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

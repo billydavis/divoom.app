@@ -16,6 +16,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <app:SideMenuButton Grid.Row="0" Text="Devices"  Glyph="&#xE7F4;" />
@@ -25,5 +26,34 @@
 
         <app:SideMenuButton Grid.Row="4" Text="Settings"  Glyph="&#xE713;"  />
         <app:SideMenuButton Grid.Row="5" Text="Feedback"  Glyph="&#xED15;"  />
+
+        <!-- Active target footer -->
+        <StackPanel x:Name="ActiveTargetPanel"
+                    Grid.Row="6"
+                    Visibility="Collapsed"
+                    Padding="4,0,4,8">
+            <Rectangle Height="1"
+                       Margin="6,0,6,0"
+                       Fill="{ThemeResource AppCardBorderBrush}" />
+            <StackPanel Margin="0,6,0,0"
+                        HorizontalAlignment="Center"
+                        Spacing="2">
+                <Ellipse Width="6" Height="6"
+                         Fill="#3FB950"
+                         HorizontalAlignment="Center" />
+                <TextBlock x:Name="ActiveDeviceNameText"
+                           FontSize="10"
+                           FontWeight="SemiBold"
+                           TextAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           MaxWidth="60"
+                           Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                <TextBlock x:Name="ActiveChannelText"
+                           FontSize="10"
+                           TextAlignment="Center"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+        </StackPanel>
+
     </Grid>
 </UserControl>

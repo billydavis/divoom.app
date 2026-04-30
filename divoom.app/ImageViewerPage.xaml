@@ -9,28 +9,54 @@
     mc:Ignorable="d"
     Background="{ThemeResource AppChromeBrush}">
 
-    <ScrollViewer>
-        <ItemsRepeater x:Name="ImageRepeater"
-                       ItemsSource="{x:Bind Images}"
-                       Margin="8"
-                       Tapped="ImageRepeater_Tapped">
-            <ItemsRepeater.Layout>
-                <UniformGridLayout MinItemWidth="128"
-                                   MinItemHeight="128"
-                                   MinColumnSpacing="4"
-                                   MinRowSpacing="4" />
-            </ItemsRepeater.Layout>
-            <ItemsRepeater.ItemTemplate>
-                <DataTemplate x:DataType="local:ImageFileInfo">
-                    <Border BorderBrush="{ThemeResource AppAccentBrush}"
-                            BorderThickness="{x:Bind SelectionBorderThickness, Mode=OneWay}">
-                        <Image Width="128"
-                               Height="128"
-                               Source="{x:Bind Source, Mode=OneWay}"
-                               Stretch="UniformToFill" />
-                    </Border>
-                </DataTemplate>
-            </ItemsRepeater.ItemTemplate>
-        </ItemsRepeater>
-    </ScrollViewer>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Active target bar -->
+        <Border Grid.Row="0"
+                Background="{ThemeResource AppSidebarBrush}"
+                BorderBrush="{ThemeResource AppCardBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="12,7">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <FontIcon Glyph="&#xE945;"
+                          FontSize="13"
+                          VerticalAlignment="Center"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBlock x:Name="SendTargetText"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+        </Border>
+
+        <!-- Image grid -->
+        <ScrollViewer Grid.Row="1">
+            <ItemsRepeater x:Name="ImageRepeater"
+                           ItemsSource="{x:Bind Images}"
+                           Margin="8"
+                           Tapped="ImageRepeater_Tapped">
+                <ItemsRepeater.Layout>
+                    <UniformGridLayout MinItemWidth="128"
+                                       MinItemHeight="128"
+                                       MinColumnSpacing="4"
+                                       MinRowSpacing="4" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="local:ImageFileInfo">
+                        <Border BorderBrush="{ThemeResource AppAccentBrush}"
+                                BorderThickness="{x:Bind SelectionBorderThickness, Mode=OneWay}">
+                            <Image Width="128"
+                                   Height="128"
+                                   Source="{x:Bind Source, Mode=OneWay}"
+                                   Stretch="UniformToFill" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+        </ScrollViewer>
+    </Grid>
 </Page>
