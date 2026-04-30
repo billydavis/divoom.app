@@ -1,4 +1,6 @@
 using Divoom;
+using divoom.app.Services;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.ObjectModel;
@@ -23,7 +25,8 @@ public sealed partial class DevicesPage : Page
     {
         this.InitializeComponent();
 
-        LoadDevices();
+        if (AppSettings.ProbeOnStartup)
+            LoadDevices();
             
     }
 
@@ -45,6 +48,12 @@ public sealed partial class DevicesPage : Page
         {
             Console.WriteLine("No devices found");
         }
+    }
+
+    private void ScanButton_Click(object sender, RoutedEventArgs e)
+    {
+        Devices.Clear();
+        LoadDevices();
     }
 
     private void DevicesGridContainerContentChanging(

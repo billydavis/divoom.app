@@ -8,71 +8,30 @@
     mc:Ignorable="d"
     Background="{ThemeResource AppChromeBrush}">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Spacing="16" Padding="20,16">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-            <TextBlock Text="Create Image"
-                       FontSize="20"
-                       FontWeight="SemiBold"
-                       Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+        <!-- Generated image results -->
+        <ScrollViewer Grid.Row="0"
+                      x:Name="ResultsScrollViewer"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="ResultsPanel"
+                        Spacing="16"
+                        Padding="20,16" />
+        </ScrollViewer>
 
-            <!-- AI Provider -->
-            <StackPanel Spacing="6">
-                <TextBlock Text="AI Provider"
-                           FontSize="12"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                <ComboBox x:Name="ProviderComboBox"
-                          HorizontalAlignment="Stretch"
-                          SelectionChanged="ProviderComboBox_SelectionChanged" />
-            </StackPanel>
+        <!-- Bottom bar: error + progress + prompt input -->
+        <StackPanel Grid.Row="1" Spacing="8" Padding="20,0,20,16">
 
-            <!-- API Key -->
-            <StackPanel Spacing="6">
-                <TextBlock Text="API Key"
-                           FontSize="12"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                <PasswordBox x:Name="ApiKeyBox"
-                             PlaceholderText="Paste your API key"
-                             PasswordChanged="ApiKeyBox_PasswordChanged" />
-            </StackPanel>
-
-            <!-- Prompt -->
-            <StackPanel Spacing="6">
-                <TextBlock Text="Prompt"
-                           FontSize="12"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                <TextBox x:Name="PromptBox"
-                         PlaceholderText="Describe the image you want to generate..."
-                         AcceptsReturn="True"
-                         TextWrapping="Wrap"
-                         MinHeight="80"
-                         MaxHeight="160" />
-            </StackPanel>
-
-            <!-- Actions -->
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <Button x:Name="GenerateButton"
-                        Content="Generate"
-                        Style="{StaticResource AccentButtonStyle}"
-                        Click="GenerateButton_Click" />
-                <Button x:Name="ClearButton"
-                        Content="Clear"
-                        Click="ClearButton_Click" />
-            </StackPanel>
-
-            <!-- Progress -->
-            <ProgressRing x:Name="GeneratingRing"
-                          IsActive="False"
-                          Visibility="Collapsed"
-                          Width="32" Height="32"
-                          HorizontalAlignment="Left" />
-
-            <!-- Error feedback (read-only TextBox so the message can be selected and copied) -->
+            <!-- Error -->
             <Border x:Name="ErrorPanel"
                     Visibility="Collapsed"
                     BorderBrush="#C42B1C"
                     BorderThickness="1"
-                    CornerRadius="4"
+                    CornerRadius="6"
                     Padding="12,8">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -102,31 +61,45 @@
                 </Grid>
             </Border>
 
-            <!-- Preview -->
-            <Border x:Name="PreviewBorder"
-                    Visibility="Collapsed"
-                    CornerRadius="4"
-                    BorderBrush="{ThemeResource AppAccentBrush}"
-                    BorderThickness="1">
-                <Image x:Name="PreviewImage"
-                       MaxHeight="320"
-                       Stretch="Uniform" />
+            <!-- Progress -->
+            <ProgressRing x:Name="GeneratingRing"
+                          IsActive="False"
+                          Visibility="Collapsed"
+                          Width="28" Height="28"
+                          HorizontalAlignment="Left" />
+
+            <!-- Prompt input with provider picker overlaid in lower-right -->
+            <Border CornerRadius="10"
+                    BorderThickness="1"
+                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                    Background="{ThemeResource ControlFillColorDefaultBrush}">
+                <Grid>
+                    <TextBox x:Name="PromptBox"
+                             PlaceholderText="Describe the image you want to generate..."
+                             AcceptsReturn="False"
+                             TextWrapping="Wrap"
+                             MinHeight="120"
+                             Padding="12,10,148,50"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             KeyDown="PromptBox_KeyDown">
+                        <TextBox.Resources>
+                            <SolidColorBrush x:Key="TextControlBorderBrush" Color="Transparent" />
+                            <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="Transparent" />
+                            <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent" />
+                            <SolidColorBrush x:Key="TextControlBorderBrushDisabled" Color="Transparent" />
+                        </TextBox.Resources>
+                    </TextBox>
+                    <ComboBox x:Name="ProviderComboBox"
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Bottom"
+                              MinWidth="120"
+                              Margin="0,0,8,8"
+                              FontSize="12"
+                              SelectionChanged="ProviderComboBox_SelectionChanged" />
+                </Grid>
             </Border>
 
-            <!-- Save to Gallery -->
-            <Button x:Name="SaveButton"
-                    Content="Save to Gallery"
-                    Visibility="Collapsed"
-                    HorizontalAlignment="Stretch"
-                    Click="SaveButton_Click" />
-
-            <!-- Save confirmation -->
-            <InfoBar x:Name="SaveConfirmBar"
-                     Severity="Success"
-                     Title="Saved to Gallery"
-                     IsOpen="False"
-                     IsClosable="True" />
-
         </StackPanel>
-    </ScrollViewer>
+    </Grid>
 </Page>

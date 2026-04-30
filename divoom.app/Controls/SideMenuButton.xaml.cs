@@ -43,7 +43,7 @@ public sealed partial class SideMenuButton : UserControl
         if (string.IsNullOrEmpty(PathData)) return;
         ItemPathIcon.Data = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), PathData);
         ItemIcon.Visibility = Visibility.Collapsed;
-        ItemPathIcon.Visibility = Visibility.Visible;
+        ItemPathViewbox.Visibility = Visibility.Visible;
     }
 
     public string Text

@@ -1,3 +1,4 @@
+using divoom.app.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -7,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
+using Windows.Storage.AccessCache;
 using Windows.Storage.Search;
 
 namespace divoom.app;
@@ -21,6 +23,12 @@ public sealed partial class ImageViewerPage : Page
     {
         InitializeComponent();
         InitializeAsync();
+        CreateImagePage.ImageSaved += OnImageSaved;
+    }
+
+    private async void OnImageSaved(StorageFile file)
+    {
+        Images.Add(await LoadImageInfoAsync(file));
     }
 
     private async void InitializeAsync() => await GetItemsAsync();
@@ -42,6 +50,17 @@ public sealed partial class ImageViewerPage : Page
                 Images.Add(await LoadImageInfoAsync(file));
         }
         catch (Exception) { }
+
+        foreach (var token in AppSettings.ExtraFolderTokens)
+        {
+            try
+            {
+                var folder = await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token);
+                foreach (StorageFile file in await folder.CreateFileQueryWithOptions(new QueryOptions()).GetFilesAsync())
+                    Images.Add(await LoadImageInfoAsync(file));
+            }
+            catch (Exception) { }
+        }
     }
 
     private void ImageRepeater_Tapped(object sender, TappedRoutedEventArgs e)

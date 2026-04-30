@@ -8,8 +8,8 @@ The app uses the **Slate** theme with full dark/light support. All colors are de
 
 | Key | Dark | Light | Usage |
 |-----|------|-------|-------|
-| `AppChromeBrush` | `#0D1117` | `#FFFFFF` | Main content area background |
-| `AppSidebarBrush` | `#161B22` | `#F6F8FA` | Side navigation pane background |
+| `AppChromeBrush` | `#161B22` | `#FFFFFF` | Main content area background |
+| `AppSidebarBrush` | `#21262D` | `#F6F8FA` | Side navigation pane background |
 | `AppTitleBarBrush` | `#21262D` | `#EAEEF2` | Title bar / window chrome background |
 | `AppAccentBrush` | `#58A6FF` | `#0969DA` | Selected nav indicator, interactive highlights |
 | `AppNavHoverBrush` | `#18FFFFFF` | `#0F000000` | Nav button hover background |

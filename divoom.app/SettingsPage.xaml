@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="divoom.app.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource AppChromeBrush}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="12" Padding="20,16">
+
+            <TextBlock Text="Settings"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+
+            <!-- ── Devices ──────────────────────────────────── -->
+            <TextBlock Text="DEVICES"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource AppAccentBrush}"
+                       Margin="0,16,0,0" />
+
+            <ToggleSwitch x:Name="ProbeOnStartupToggle"
+                          Header="Probe for new devices at startup"
+                          Margin="0,-4,0,0"
+                          Toggled="ProbeOnStartupToggle_Toggled" />
+
+            <!-- ── Image Folders ────────────────────────────── -->
+            <TextBlock Text="IMAGE FOLDERS"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource AppAccentBrush}"
+                       Margin="0,16,0,0" />
+
+            <TextBlock Text="Additional folders scanned when viewing images. Built-in and generated image folders are always included."
+                       FontSize="12"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       TextWrapping="Wrap" />
+
+            <StackPanel x:Name="FolderListPanel" Spacing="4" />
+
+            <Button x:Name="AddFolderButton"
+                    Content="Add Folder…"
+                    Click="AddFolderButton_Click" />
+
+            <!-- ── AI Image Generation ───────────────────────── -->
+            <TextBlock Text="AI IMAGE GENERATION"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource AppAccentBrush}"
+                       Margin="0,16,0,0" />
+
+            <!-- Global prompt instructions -->
+            <TextBlock Text="Global Prompt Instructions"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="Prepended to every image generation prompt, for all providers"
+                           FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           TextWrapping="Wrap" />
+                <TextBox x:Name="GlobalInstructionsBox"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         MinHeight="60"
+                         MaxHeight="120"
+                         PlaceholderText="e.g. pixel art, 32×32, limited palette"
+                         LostFocus="GlobalInstructionsBox_LostFocus" />
+            </StackPanel>
+
+            <!-- Provider: ChatGPT (DALL-E 3) -->
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,8,0,0" />
+
+            <TextBlock Text="ChatGPT (DALL-E 3)"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="API Key"
+                           FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <PasswordBox Grid.Column="0" x:Name="DallEApiKeyBox"
+                                 PlaceholderText="Paste your API key"
+                                 Tag="ApiKey_DallE"
+                                 PasswordChanged="ApiKeyBox_PasswordChanged" />
+                    <ToggleButton Grid.Column="1" Margin="4,0,0,0"
+                                  Width="36" VerticalAlignment="Stretch"
+                                  ToolTipService.ToolTip="Show / hide key"
+                                  Click="RevealToggle_Click">
+                        <FontIcon Glyph="&#xE7B3;" FontSize="14" />
+                    </ToggleButton>
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="Prompt Instructions"
+                           FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBox x:Name="DallEInstructionsBox"
+                         AcceptsReturn="True" TextWrapping="Wrap"
+                         MinHeight="40" MaxHeight="80"
+                         PlaceholderText="Appended after global instructions for this provider"
+                         Tag="ApiKey_DallE"
+                         LostFocus="ProviderInstructionsBox_LostFocus" />
+            </StackPanel>
+
+            <!-- Provider: Google Imagen 4 -->
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,8,0,0" />
+
+            <TextBlock Text="Google Imagen 4"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="API Key"
+                           FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <PasswordBox Grid.Column="0" x:Name="GeminiApiKeyBox"
+                                 PlaceholderText="Paste your API key"
+                                 Tag="ApiKey_Gemini"
+                                 PasswordChanged="ApiKeyBox_PasswordChanged" />
+                    <ToggleButton Grid.Column="1" Margin="4,0,0,0"
+                                  Width="36" VerticalAlignment="Stretch"
+                                  ToolTipService.ToolTip="Show / hide key"
+                                  Click="RevealToggle_Click">
+                        <FontIcon Glyph="&#xE7B3;" FontSize="14" />
+                    </ToggleButton>
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="Prompt Instructions"
+                           FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBox x:Name="GeminiInstructionsBox"
+                         AcceptsReturn="True" TextWrapping="Wrap"
+                         MinHeight="40" MaxHeight="80"
+                         PlaceholderText="Appended after global instructions for this provider"
+                         Tag="ApiKey_Gemini"
+                         LostFocus="ProviderInstructionsBox_LostFocus" />
+            </StackPanel>
+
+            <!-- Provider: DeepAI -->
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,8,0,0" />
+
+            <TextBlock Text="DeepAI"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="API Key"
+                           FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <PasswordBox Grid.Column="0" x:Name="DeepAiApiKeyBox"
+                                 PlaceholderText="Paste your API key"
+                                 Tag="ApiKey_DeepAI"
+                                 PasswordChanged="ApiKeyBox_PasswordChanged" />
+                    <ToggleButton Grid.Column="1" Margin="4,0,0,0"
+                                  Width="36" VerticalAlignment="Stretch"
+                                  ToolTipService.ToolTip="Show / hide key"
+                                  Click="RevealToggle_Click">
+                        <FontIcon Glyph="&#xE7B3;" FontSize="14" />
+                    </ToggleButton>
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="Prompt Instructions"
+                           FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBox x:Name="DeepAiInstructionsBox"
+                         AcceptsReturn="True" TextWrapping="Wrap"
+                         MinHeight="40" MaxHeight="80"
+                         PlaceholderText="Appended after global instructions for this provider"
+                         Tag="ApiKey_DeepAI"
+                         LostFocus="ProviderInstructionsBox_LostFocus" />
+            </StackPanel>
+
+            <!-- Provider: Stability AI -->
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,8,0,0" />
+
+            <TextBlock Text="Stability AI"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="API Key"
+                           FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <PasswordBox Grid.Column="0" x:Name="StabilityApiKeyBox"
+                                 PlaceholderText="Paste your API key"
+                                 Tag="ApiKey_Stability"
+                                 PasswordChanged="ApiKeyBox_PasswordChanged" />
+                    <ToggleButton Grid.Column="1" Margin="4,0,0,0"
+                                  Width="36" VerticalAlignment="Stretch"
+                                  ToolTipService.ToolTip="Show / hide key"
+                                  Click="RevealToggle_Click">
+                        <FontIcon Glyph="&#xE7B3;" FontSize="14" />
+                    </ToggleButton>
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Spacing="6" Margin="0,0,0,16">
+                <TextBlock Text="Prompt Instructions"
+                           FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBox x:Name="StabilityInstructionsBox"
+                         AcceptsReturn="True" TextWrapping="Wrap"
+                         MinHeight="40" MaxHeight="80"
+                         PlaceholderText="Appended after global instructions for this provider"
+                         Tag="ApiKey_Stability"
+                         LostFocus="ProviderInstructionsBox_LostFocus" />
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

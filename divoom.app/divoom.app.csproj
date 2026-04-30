@@ -21,6 +21,7 @@
   <ItemGroup>
     <None Remove="Assets\pixoo64.png" />
     <None Remove="ComingSoon.xaml" />
+    <None Remove="SettingsPage.xaml" />
     <None Remove="CreateImagePage.xaml" />
     <None Remove="Controls\DivoomButton.xaml" />
     <None Remove="Controls\SideMenuButton.xaml" />
@@ -102,6 +103,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="CreateImagePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

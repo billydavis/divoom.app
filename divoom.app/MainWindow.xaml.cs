@@ -99,6 +99,13 @@ public sealed partial class MainWindow : Window
                     _pages["Create"] = page;
                 }
                 break;
+            case "Settings":
+                if (!_pages.TryGetValue("Settings", out page))
+                {
+                    page = new SettingsPage();
+                    _pages["Settings"] = page;
+                }
+                break;
             default:
                 if (!_pages.TryGetValue("ComingSoon", out page))
                 {
@@ -108,6 +115,6 @@ public sealed partial class MainWindow : Window
                 break;
         }
 
-        ContentFrame.Navigate(page.GetType());
+        ContentFrame.Content = page;
     }
 }

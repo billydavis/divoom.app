@@ -1,19 +1,25 @@
 using divoom.app.Services;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace divoom.app;
 
 public sealed partial class CreateImagePage : Page
 {
+    public static event Action<Windows.Storage.StorageFile>? ImageSaved;
+
     private static readonly IReadOnlyList<IImageGenerationProvider> _providers =
         new List<IImageGenerationProvider>
         {
@@ -24,7 +30,6 @@ public sealed partial class CreateImagePage : Page
         };
 
     private IImageGenerationProvider _activeProvider = _providers[0];
-    private byte[]? _generatedBytes;
     private CancellationTokenSource? _cts;
 
     public CreateImagePage()
@@ -35,62 +40,70 @@ public sealed partial class CreateImagePage : Page
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        foreach (var p in _providers)
-            ProviderComboBox.Items.Add(p.DisplayName);
-        ProviderComboBox.SelectedIndex = 0;
-        ApiKeyBox.Password = ApiKeyStore.Load(_activeProvider.SettingsKey) ?? string.Empty;
+        if (ProviderComboBox.Items.Count == 0)
+        {
+            foreach (var p in _providers)
+                ProviderComboBox.Items.Add(p.DisplayName);
+            ProviderComboBox.SelectedIndex = 0;
+        }
+        PromptBox.Focus(FocusState.Programmatic);
     }
 
     private void ProviderComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         _activeProvider = _providers[ProviderComboBox.SelectedIndex];
-        ApiKeyBox.Password = ApiKeyStore.Load(_activeProvider.SettingsKey) ?? string.Empty;
     }
 
-    private void ApiKeyBox_PasswordChanged(object sender, RoutedEventArgs e)
+    private void PromptBox_KeyDown(object sender, KeyRoutedEventArgs e)
     {
-        if (!string.IsNullOrWhiteSpace(ApiKeyBox.Password))
-            ApiKeyStore.Save(_activeProvider.SettingsKey, ApiKeyBox.Password);
+        if (e.Key == Windows.System.VirtualKey.Enter)
+        {
+            e.Handled = true;
+            _ = GenerateAsync();
+        }
+        else if (e.Key == Windows.System.VirtualKey.Escape)
+        {
+            e.Handled = true;
+            PromptBox.Text = string.Empty;
+        }
     }
 
-    private async void GenerateButton_Click(object sender, RoutedEventArgs e)
+    private async Task GenerateAsync()
     {
         var prompt = PromptBox.Text.Trim();
         if (string.IsNullOrEmpty(prompt)) return;
 
-        var apiKey = ApiKeyBox.Password.Trim();
+        var apiKey = AppSettings.GetApiKey(_activeProvider.SettingsKey) ?? string.Empty;
         if (string.IsNullOrEmpty(apiKey))
         {
-            ShowError("Please enter an API key for the selected provider.");
+            ShowError("No API key configured. Go to Settings to add one.");
             return;
         }
 
-        GenerateButton.IsEnabled = false;
-        ClearButton.IsEnabled = false;
         GeneratingRing.IsActive = true;
         GeneratingRing.Visibility = Visibility.Visible;
         ErrorPanel.Visibility = Visibility.Collapsed;
-        SaveConfirmBar.IsOpen = false;
-        PreviewBorder.Visibility = Visibility.Collapsed;
-        SaveButton.Visibility = Visibility.Collapsed;
 
         _cts?.Cancel();
         _cts = new CancellationTokenSource();
 
         try
         {
-            _generatedBytes = await _activeProvider.GenerateAsync(prompt, apiKey, _cts.Token);
+            var bytes = await _activeProvider.GenerateAsync(
+                AppSettings.BuildPrompt(prompt, _activeProvider.SettingsKey), apiKey, _cts.Token);
 
             using var ms = new InMemoryRandomAccessStream();
-            await ms.WriteAsync(_generatedBytes.AsBuffer());
+            await ms.WriteAsync(bytes.AsBuffer());
             ms.Seek(0);
 
             var bitmap = new BitmapImage();
             await bitmap.SetSourceAsync(ms);
 
-            PreviewImage.Source = bitmap;
-            PreviewBorder.Visibility = Visibility.Visible;
-            SaveButton.Visibility = Visibility.Visible;
+            var card = CreateImageCard(bytes, bitmap);
+            ResultsPanel.Children.Add(card);
+
+            ResultsPanel.UpdateLayout();
+            ResultsScrollViewer.ScrollToVerticalOffset(ResultsScrollViewer.ScrollableHeight);
         }
         catch (OperationCanceledException) { }
         catch (ImageGenerationException ex)
@@ -103,56 +116,81 @@ public sealed partial class CreateImagePage : Page
         }
         finally
         {
-            GenerateButton.IsEnabled = true;
-            ClearButton.IsEnabled = true;
             GeneratingRing.IsActive = false;
             GeneratingRing.Visibility = Visibility.Collapsed;
         }
     }
 
-    private void ClearButton_Click(object sender, RoutedEventArgs e)
+    private FrameworkElement CreateImageCard(byte[] bytes, BitmapImage bitmap)
     {
-        _cts?.Cancel();
-        _generatedBytes = null;
-        PromptBox.Text = string.Empty;
-        PreviewImage.Source = null;
-        PreviewBorder.Visibility = Visibility.Collapsed;
-        SaveButton.Visibility = Visibility.Collapsed;
-        ErrorPanel.Visibility = Visibility.Collapsed;
-        SaveConfirmBar.IsOpen = false;
-    }
-
-    private async void SaveButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (_generatedBytes is null) return;
-
-        try
+        var image = new Image
         {
-            var imagesFolder = await ApplicationData.Current.LocalFolder
-                .CreateFolderAsync("Images", CreationCollisionOption.OpenIfExists);
+            Source = bitmap,
+            MaxHeight = 320,
+            Stretch = Stretch.Uniform
+        };
 
-            var fileName = $"ai_{DateTime.Now:yyyyMMdd_HHmmss}.png";
-            var file = await imagesFolder.CreateFileAsync(fileName, CreationCollisionOption.GenerateUniqueName);
-
-            using var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite);
-            var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, fileStream);
-
-            using var ms = new InMemoryRandomAccessStream();
-            await ms.WriteAsync(_generatedBytes.AsBuffer());
-            ms.Seek(0);
-            var decoder = await BitmapDecoder.CreateAsync(ms);
-            var softBitmap = await decoder.GetSoftwareBitmapAsync();
-            encoder.SetSoftwareBitmap(softBitmap);
-            await encoder.FlushAsync();
-
-            SaveConfirmBar.Message = $"Saved as {fileName}";
-            SaveConfirmBar.IsOpen = true;
-            SaveButton.Visibility = Visibility.Collapsed;
-        }
-        catch (Exception ex)
+        var saveButton = new Button
         {
-            ShowError($"Save failed: {ex.Message}");
-        }
+            Content = "Save to Gallery",
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            Margin = new Thickness(0, 8, 0, 0)
+        };
+
+        saveButton.Click += async (s, e) =>
+        {
+            saveButton.IsEnabled = false;
+            try
+            {
+                var imagesFolder = await ApplicationData.Current.LocalFolder
+                    .CreateFolderAsync("Images", CreationCollisionOption.OpenIfExists);
+
+                var fileName = $"ai_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+                var file = await imagesFolder.CreateFileAsync(fileName, CreationCollisionOption.GenerateUniqueName);
+
+                using var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite);
+                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, fileStream);
+
+                using var ms = new InMemoryRandomAccessStream();
+                await ms.WriteAsync(bytes.AsBuffer());
+                ms.Seek(0);
+                var decoder = await BitmapDecoder.CreateAsync(ms);
+                var softBitmap = await decoder.GetSoftwareBitmapAsync();
+                encoder.SetSoftwareBitmap(softBitmap);
+                await encoder.FlushAsync();
+
+                ImageSaved?.Invoke(file);
+                saveButton.Content = "Saved";
+                saveButton.Visibility = Visibility.Collapsed;
+
+                var savedText = new TextBlock
+                {
+                    Text = $"Saved as {fileName}",
+                    FontSize = 11,
+                    Margin = new Thickness(0, 8, 0, 0),
+                    Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"]
+                };
+                ((StackPanel)saveButton.Parent).Children.Add(savedText);
+            }
+            catch (Exception ex)
+            {
+                ShowError($"Save failed: {ex.Message}");
+                saveButton.IsEnabled = true;
+            }
+        };
+
+        var stack = new StackPanel();
+        stack.Children.Add(image);
+        stack.Children.Add(saveButton);
+
+        return new Border
+        {
+            CornerRadius = new CornerRadius(6),
+            BorderThickness = new Thickness(1),
+            BorderBrush = (Brush)Application.Current.Resources["AppAccentBrush"],
+            Padding = new Thickness(8),
+            Child = stack
+        };
     }
 
     private void ErrorDismiss_Click(object sender, RoutedEventArgs e)

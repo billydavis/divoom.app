@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:divoom.app.Models"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource AppChromeBrush}">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -16,7 +16,17 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Devices" FontSize="20" Padding="18 8" />
+        <Grid Grid.Row="0" Padding="18,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Devices" FontSize="20" VerticalAlignment="Center" />
+            <Button Grid.Column="1" x:Name="ScanButton"
+                    Content="Scan"
+                    VerticalAlignment="Center"
+                    Click="ScanButton_Click" />
+        </Grid>
 
         
        <ScrollViewer Grid.Row="1">

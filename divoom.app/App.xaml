@@ -12,13 +12,13 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <!-- Slate Dark -->
-                    <SolidColorBrush x:Key="AppChromeBrush"       Color="#0D1117" />
-                    <SolidColorBrush x:Key="AppSidebarBrush"      Color="#161B22" />
+                    <SolidColorBrush x:Key="AppChromeBrush"       Color="#161B22" />
+                    <SolidColorBrush x:Key="AppSidebarBrush"      Color="#21262D" />
                     <SolidColorBrush x:Key="AppTitleBarBrush"     Color="#21262D" />
                     <SolidColorBrush x:Key="AppAccentBrush"       Color="#58A6FF" />
                     <SolidColorBrush x:Key="AppNavHoverBrush"     Color="#18FFFFFF" />
                     <SolidColorBrush x:Key="AppNavPressedBrush"   Color="#0CFFFFFF" />
-                    <SolidColorBrush x:Key="AppNavSelectedBrush"  Color="#14FFFFFF" />
+                    <SolidColorBrush x:Key="AppNavSelectedBrush"  Color="#2858A6FF" />
                     <Visibility x:Key="AppIconDarkVisibility">Visible</Visibility>
                     <Visibility x:Key="AppIconLightVisibility">Collapsed</Visibility>
                 </ResourceDictionary>
@@ -30,7 +30,7 @@
                     <SolidColorBrush x:Key="AppAccentBrush"       Color="#0969DA" />
                     <SolidColorBrush x:Key="AppNavHoverBrush"     Color="#0F000000" />
                     <SolidColorBrush x:Key="AppNavPressedBrush"   Color="#07000000" />
-                    <SolidColorBrush x:Key="AppNavSelectedBrush"  Color="#0A000000" />
+                    <SolidColorBrush x:Key="AppNavSelectedBrush"  Color="#180969DA" />
                     <Visibility x:Key="AppIconDarkVisibility">Collapsed</Visibility>
                     <Visibility x:Key="AppIconLightVisibility">Visible</Visibility>
                 </ResourceDictionary>
