@@ -29,26 +29,23 @@ public class ImageFileInfo : INotifyPropertyChanged
 
     public ImageProperties ImageProperties { get; }
 
-    public async Task<BitmapImage> GetImageSourceAsync()
+    public async Task<BitmapImage> GetImageSourceAsync(int decodePixelWidth = 0)
     {
         using IRandomAccessStream fileStream = await ImageFile.OpenReadAsync();
-
-        // Create a bitmap to be the image source.
-        BitmapImage bitmapImage = new();
-        bitmapImage.SetSource(fileStream);
-
+        var bitmapImage = new BitmapImage();
+        if (decodePixelWidth > 0)
+            bitmapImage.DecodePixelWidth = decodePixelWidth;
+        await bitmapImage.SetSourceAsync(fileStream);
         return bitmapImage;
     }
 
     public async Task<BitmapImage> GetImageThumbnailAsync()
     {
         StorageItemThumbnail thumbnail =
-            await ImageFile.GetThumbnailAsync(ThumbnailMode.PicturesView);
-        // Create a bitmap to be the image source.
+            await ImageFile.GetThumbnailAsync(ThumbnailMode.PicturesView, 128);
         var bitmapImage = new BitmapImage();
-        bitmapImage.SetSource(thumbnail);
+        await bitmapImage.SetSourceAsync(thumbnail);
         thumbnail.Dispose();
-
         return bitmapImage;
     }
 

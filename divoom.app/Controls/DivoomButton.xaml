@@ -54,13 +54,16 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Device image -->
+                <!-- Device icon -->
                 <Border Grid.Row="0" Grid.Column="0"
                         Width="72" Height="72"
                         CornerRadius="6"
                         Background="{ThemeResource AppCardImageBrush}">
-                    <Image Source="{x:Bind Device.Hardware, Converter={StaticResource HardwareToImageConverter}}"
-                           Stretch="Uniform" />
+                    <ContentControl Width="62" Height="62"
+                                    Content="{x:Bind Device.Hardware}"
+                                    ContentTemplateSelector="{StaticResource HardwareIconSelector}"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch" />
                 </Border>
 
                 <!-- Device info -->

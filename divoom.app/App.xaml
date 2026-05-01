@@ -41,8 +41,99 @@
                     <Visibility x:Key="AppIconLightVisibility">Visible</Visibility>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <local:HardwareToImageConverter x:Key="HardwareToImageConverter"/>
             <local:HardwareToNameConverter x:Key="HardwareToNameConverter"/>
+
+            <!-- Device icon templates -->
+            <DataTemplate x:Key="DeviceIconPixoo64">
+                <Viewbox>
+                    <Canvas Width="48" Height="52">
+                        <!-- Device body -->
+                        <Rectangle Canvas.Left="1" Canvas.Top="1" Width="46" Height="47"
+                                   RadiusX="4" RadiusY="4"
+                                   Fill="{ThemeResource AppCardBrush}"
+                                   Stroke="{ThemeResource AppCardBorderBrush}" StrokeThickness="1.5" />
+                        <!-- Screen -->
+                        <Rectangle Canvas.Left="5" Canvas.Top="5" Width="38" Height="34"
+                                   RadiusX="2" RadiusY="2"
+                                   Fill="{ThemeResource AppChromeBrush}" />
+                        <!-- Pixel grid row 1 -->
+                        <Rectangle Canvas.Left="11" Canvas.Top="11" Width="6" Height="6" RadiusX="1" RadiusY="1"
+                                   Fill="{ThemeResource AppAccentBrush}" Opacity="1.0" />
+                        <Rectangle Canvas.Left="21" Canvas.Top="11" Width="6" Height="6" RadiusX="1" RadiusY="1"
+                                   Fill="{ThemeResource AppAccentBrush}" Opacity="0.55" />
+                        <Rectangle Canvas.Left="31" Canvas.Top="11" Width="6" Height="6" RadiusX="1" RadiusY="1"
+                                   Fill="{ThemeResource AppAccentBrush}" Opacity="0.85" />
+                        <!-- Pixel grid row 2 -->
+                        <Rectangle Canvas.Left="11" Canvas.Top="21" Width="6" Height="6" RadiusX="1" RadiusY="1"
+                                   Fill="{ThemeResource AppAccentBrush}" Opacity="0.4" />
+                        <Rectangle Canvas.Left="21" Canvas.Top="21" Width="6" Height="6" RadiusX="1" RadiusY="1"
+                                   Fill="{ThemeResource AppAccentBrush}" Opacity="1.0" />
+                        <Rectangle Canvas.Left="31" Canvas.Top="21" Width="6" Height="6" RadiusX="1" RadiusY="1"
+                                   Fill="{ThemeResource AppAccentBrush}" Opacity="0.5" />
+                        <!-- Pixel grid row 3 -->
+                        <Rectangle Canvas.Left="11" Canvas.Top="31" Width="6" Height="6" RadiusX="1" RadiusY="1"
+                                   Fill="{ThemeResource AppAccentBrush}" Opacity="0.75" />
+                        <Rectangle Canvas.Left="21" Canvas.Top="31" Width="6" Height="6" RadiusX="1" RadiusY="1"
+                                   Fill="{ThemeResource AppAccentBrush}" Opacity="0.5" />
+                        <Rectangle Canvas.Left="31" Canvas.Top="31" Width="6" Height="6" RadiusX="1" RadiusY="1"
+                                   Fill="{ThemeResource AppAccentBrush}" Opacity="1.0" />
+                        <!-- Stand -->
+                        <Rectangle Canvas.Left="15" Canvas.Top="49" Width="18" Height="2"
+                                   RadiusX="1" RadiusY="1"
+                                   Fill="{ThemeResource AppCardBorderBrush}" />
+                    </Canvas>
+                </Viewbox>
+            </DataTemplate>
+
+            <DataTemplate x:Key="DeviceIconTimesGate">
+                <Viewbox>
+                    <Canvas Width="80" Height="40">
+                        <!-- Device housing -->
+                        <Rectangle Canvas.Left="1" Canvas.Top="1" Width="78" Height="38"
+                                   RadiusX="4" RadiusY="4"
+                                   Fill="{ThemeResource AppCardBrush}"
+                                   Stroke="{ThemeResource AppCardBorderBrush}" StrokeThickness="1.5" />
+                        <!-- Panel 1 -->
+                        <Rectangle Canvas.Left="6"  Canvas.Top="8" Width="12" Height="24" RadiusX="2" RadiusY="2" Fill="{ThemeResource AppCardBorderBrush}" />
+                        <Rectangle Canvas.Left="8"  Canvas.Top="10" Width="8" Height="20" RadiusX="1" RadiusY="1" Fill="{ThemeResource AppChromeBrush}" />
+                        <Rectangle Canvas.Left="9"  Canvas.Top="12" Width="3" Height="3"  RadiusX="0.5" RadiusY="0.5" Fill="{ThemeResource AppAccentBrush}" Opacity="0.9" />
+                        <Rectangle Canvas.Left="13" Canvas.Top="25" Width="3" Height="3"  RadiusX="0.5" RadiusY="0.5" Fill="{ThemeResource AppAccentBrush}" Opacity="0.5" />
+                        <!-- Panel 2 -->
+                        <Rectangle Canvas.Left="20" Canvas.Top="8" Width="12" Height="24" RadiusX="2" RadiusY="2" Fill="{ThemeResource AppCardBorderBrush}" />
+                        <Rectangle Canvas.Left="22" Canvas.Top="10" Width="8" Height="20" RadiusX="1" RadiusY="1" Fill="{ThemeResource AppChromeBrush}" />
+                        <Rectangle Canvas.Left="23" Canvas.Top="12" Width="3" Height="3"  RadiusX="0.5" RadiusY="0.5" Fill="{ThemeResource AppAccentBrush}" Opacity="0.5" />
+                        <Rectangle Canvas.Left="27" Canvas.Top="25" Width="3" Height="3"  RadiusX="0.5" RadiusY="0.5" Fill="{ThemeResource AppAccentBrush}" Opacity="0.9" />
+                        <!-- Panel 3 -->
+                        <Rectangle Canvas.Left="34" Canvas.Top="8" Width="12" Height="24" RadiusX="2" RadiusY="2" Fill="{ThemeResource AppCardBorderBrush}" />
+                        <Rectangle Canvas.Left="36" Canvas.Top="10" Width="8" Height="20" RadiusX="1" RadiusY="1" Fill="{ThemeResource AppChromeBrush}" />
+                        <Rectangle Canvas.Left="37" Canvas.Top="12" Width="3" Height="3"  RadiusX="0.5" RadiusY="0.5" Fill="{ThemeResource AppAccentBrush}" Opacity="0.8" />
+                        <Rectangle Canvas.Left="41" Canvas.Top="25" Width="3" Height="3"  RadiusX="0.5" RadiusY="0.5" Fill="{ThemeResource AppAccentBrush}" Opacity="0.6" />
+                        <!-- Panel 4 -->
+                        <Rectangle Canvas.Left="48" Canvas.Top="8" Width="12" Height="24" RadiusX="2" RadiusY="2" Fill="{ThemeResource AppCardBorderBrush}" />
+                        <Rectangle Canvas.Left="50" Canvas.Top="10" Width="8" Height="20" RadiusX="1" RadiusY="1" Fill="{ThemeResource AppChromeBrush}" />
+                        <Rectangle Canvas.Left="51" Canvas.Top="12" Width="3" Height="3"  RadiusX="0.5" RadiusY="0.5" Fill="{ThemeResource AppAccentBrush}" Opacity="0.6" />
+                        <Rectangle Canvas.Left="55" Canvas.Top="25" Width="3" Height="3"  RadiusX="0.5" RadiusY="0.5" Fill="{ThemeResource AppAccentBrush}" Opacity="0.9" />
+                        <!-- Panel 5 -->
+                        <Rectangle Canvas.Left="62" Canvas.Top="8" Width="12" Height="24" RadiusX="2" RadiusY="2" Fill="{ThemeResource AppCardBorderBrush}" />
+                        <Rectangle Canvas.Left="64" Canvas.Top="10" Width="8" Height="20" RadiusX="1" RadiusY="1" Fill="{ThemeResource AppChromeBrush}" />
+                        <Rectangle Canvas.Left="65" Canvas.Top="12" Width="3" Height="3"  RadiusX="0.5" RadiusY="0.5" Fill="{ThemeResource AppAccentBrush}" Opacity="1.0" />
+                        <Rectangle Canvas.Left="69" Canvas.Top="25" Width="3" Height="3"  RadiusX="0.5" RadiusY="0.5" Fill="{ThemeResource AppAccentBrush}" Opacity="0.5" />
+                    </Canvas>
+                </Viewbox>
+            </DataTemplate>
+
+            <DataTemplate x:Key="DeviceIconDefault">
+                <FontIcon Glyph="&#xE7F8;"
+                          FontSize="36"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </DataTemplate>
+
+            <local:HardwareIconSelector x:Key="HardwareIconSelector"
+                Pixoo64Template="{StaticResource DeviceIconPixoo64}"
+                TimesGateTemplate="{StaticResource DeviceIconTimesGate}"
+                DefaultTemplate="{StaticResource DeviceIconDefault}" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

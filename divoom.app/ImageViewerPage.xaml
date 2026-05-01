@@ -9,36 +9,68 @@
     mc:Ignorable="d"
     Background="{ThemeResource AppChromeBrush}">
 
+    <Page.Resources>
+        <MenuFlyout x:Name="ImageContextMenu">
+            <MenuFlyoutItem Text="Send to device"
+                            Click="SendToDevice_Click">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE945;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator />
+            <MenuFlyoutItem Text="Delete"
+                            Click="DeleteImage_Click">
+                <MenuFlyoutItem.Icon>
+                    <FontIcon Glyph="&#xE74D;" />
+                </MenuFlyoutItem.Icon>
+            </MenuFlyoutItem>
+        </MenuFlyout>
+    </Page.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Active target bar -->
-        <Border Grid.Row="0"
-                Background="{ThemeResource AppSidebarBrush}"
-                BorderBrush="{ThemeResource AppCardBorderBrush}"
-                BorderThickness="0,0,0,1"
-                Padding="12,7">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <FontIcon Glyph="&#xE945;"
-                          FontSize="13"
-                          VerticalAlignment="Center"
-                          Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                <TextBlock x:Name="SendTargetText"
-                           FontSize="12"
-                           VerticalAlignment="Center"
-                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-            </StackPanel>
-        </Border>
+        <!-- Toolbar -->
+        <Grid Grid.Row="0" Padding="18,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="Images"
+                       FontSize="20"
+                       VerticalAlignment="Center" />
+
+            <Button Grid.Column="1"
+                    x:Name="ReloadButton"
+                    VerticalAlignment="Center"
+                    IsEnabled="{x:Bind IsNotLoading, Mode=OneWay}"
+                    Click="ReloadButton_Click">
+                <Grid>
+                    <TextBlock Text="Reload"
+                               Visibility="{x:Bind LoadButtonTextVisibility, Mode=OneWay}" />
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8"
+                                Visibility="{x:Bind LoadingIndicatorVisibility, Mode=OneWay}">
+                        <ProgressRing Width="16" Height="16" IsActive="True" />
+                        <TextBlock Text="Loading…" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+            </Button>
+        </Grid>
 
         <!-- Image grid -->
-        <ScrollViewer Grid.Row="1">
+        <ScrollViewer Grid.Row="1"
+                      Visibility="{x:Bind ImageListVisibility, Mode=OneWay}">
             <ItemsRepeater x:Name="ImageRepeater"
                            ItemsSource="{x:Bind Images}"
                            Margin="8"
-                           Tapped="ImageRepeater_Tapped">
+                           Tapped="ImageRepeater_Tapped"
+                           RightTapped="ImageRepeater_RightTapped">
                 <ItemsRepeater.Layout>
                     <UniformGridLayout MinItemWidth="128"
                                        MinItemHeight="128"
@@ -58,5 +90,45 @@
                 </ItemsRepeater.ItemTemplate>
             </ItemsRepeater>
         </ScrollViewer>
+
+        <!-- Loading placeholder -->
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="14"
+                    Visibility="{x:Bind LoadingPlaceholderVisibility, Mode=OneWay}">
+            <ProgressRing Width="40" Height="40" IsActive="True" />
+            <TextBlock Text="Loading images…"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        </StackPanel>
+
+        <!-- Empty state -->
+        <StackPanel Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="10"
+                    Visibility="{x:Bind EmptyStateVisibility, Mode=OneWay}">
+            <FontIcon Glyph="&#xEB9F;"
+                      FontSize="48"
+                      HorizontalAlignment="Center"
+                      Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <TextBlock Text="No images found"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center"
+                       Margin="0,4,0,0" />
+            <TextBlock Text="Generated images will appear here automatically.&#10;You can also add a folder in Settings."
+                       FontSize="13"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Button Content="Reload"
+                    HorizontalAlignment="Center"
+                    Click="ReloadButton_Click"
+                    Margin="0,6,0,0" />
+        </StackPanel>
+
     </Grid>
 </Page>

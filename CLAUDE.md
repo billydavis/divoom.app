@@ -39,6 +39,40 @@ Two PNG exports at 48×48 px, generated from SVG source via `convert-icons.mjs` 
 
 Do not define custom text brushes — use WinUI's built-in `TextFillColorPrimaryBrush` and `TextFillColorSecondaryBrush`, which automatically adapt to the current theme.
 
+### App.xaml card brushes
+
+Three additional brushes used in device cards — also defined per-theme:
+
+| Key | Dark | Light | Usage |
+|-----|------|-------|-------|
+| `AppCardBrush` | `#21262D` | `#FFFFFF` | Device card background |
+| `AppCardBorderBrush` | `#30363D` | `#D0D7DE` | Card border, device icon frame/body stroke |
+| `AppCardImageBrush` | `#2D333B` | `#F6F8FA` | Background well behind device icons |
+
+---
+
+## Device Icons
+
+Device cards in `DivoomButton.xaml` use XAML vector icons — **not PNG images**. They are theme-aware `Canvas`-in-`Viewbox` drawings defined as `DataTemplate` resources in `App.xaml` and selected at runtime by `HardwareIconSelector` (`HardwareIconSelector.cs`).
+
+| Hardware ID | Device | Template key |
+|-------------|--------|-------------|
+| 92 | Pixoo 64 | `DeviceIconPixoo64` |
+| 400 | Times Gate | `DeviceIconTimesGate` |
+| (other) | Default | `DeviceIconDefault` |
+
+**To add a new device:** add a `DataTemplate` in `App.xaml` and a new `case` in `HardwareIconSelector.SelectTemplateCore`. All icon brushes must use `{ThemeResource}` — never hardcode colors. The icon canvas coordinate space is arbitrary; a `Viewbox` scales it to fit the 62×62 `ContentControl` in the card.
+
+---
+
+## Image Loading — Aspect Ratio Rules
+
+Images in the gallery (`ImageViewerPage`) are loaded via `ImageFileInfo.GetImageSourceAsync(int decodePixelWidth)` with `decodePixelWidth = 128`. The `Image` control uses `Stretch="UniformToFill"` inside a fixed 128×128 tile to crop-fill without letterboxing.
+
+**Do not switch to `GetImageThumbnailAsync()` for the gallery tiles.** `ThumbnailMode.PicturesView` returns thumbnails that Windows pre-letterboxes internally, which overrides the `UniformToFill` stretch and produces blank padding. Always load the source image (with a `DecodePixelWidth` cap) and let the `Image` control handle the crop.
+
+`BitmapImage.SetSource()` starts an async decode but returns immediately — always use `await SetSourceAsync()` instead, or the stream will be disposed before decoding completes, resulting in silent blank tiles.
+
 ---
 
 ## TODOs
@@ -50,4 +84,4 @@ When revisiting, the fix is two parts:
 1. **Lazy load via `ItemsRepeater.ElementPrepared`** — load the image only when the element is about to be displayed. Use a `CancellationTokenSource` per element (cancel it in `ElementClearing`) to prevent the async race condition where a recycled element gets the wrong image source.
 2. **Use thumbnails** — call `GetImageThumbnailAsync()` with an explicit 128px size request instead of `GetImageSourceAsync()`, so memory stays flat regardless of collection size.
 
-Also consider a refresh mechanism (toolbar button or file system watcher) since new images can be added to the directory at any time.
+A toolbar Reload button is already implemented (`ReloadButton_Click` → `ReloadAsync()`). A file system watcher could further automate this.
