@@ -26,7 +26,7 @@ Built with WinUI 3 / Windows App SDK and C# / .NET 8.
 | Device | Resolution |
 |--------|-----------|
 | Pixoo 64 | 64 × 64 |
-| Times Gate | 64 × 64 per panel (5 panels) |
+| Times Gate | 128 × 128 (5 panels) |
 
 ---
 
