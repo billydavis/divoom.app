@@ -61,7 +61,11 @@ public sealed partial class ImageViewerPage : Page, INotifyPropertyChanged
 
     private async void OnImageSaved(StorageFile file)
     {
-        Images.Add(await LoadImageInfoAsync(file));
+        try
+        {
+            Images.Add(await LoadImageInfoAsync(file));
+        }
+        catch (Exception) { }
     }
 
     private async void InitializeAsync() => await ReloadAsync();

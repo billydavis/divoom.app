@@ -3,13 +3,73 @@
     x:Class="divoom.app.ComingSoon"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:divoom.app"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource AppChromeBrush}">
 
     <Grid>
-        <TextBlock Text="Coming Soon"></TextBlock>
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    MaxWidth="420"
+                    Spacing="0"
+                    Padding="24">
+
+            <!-- Icon -->
+            <FontIcon Glyph="&#xED15;"
+                      FontSize="36"
+                      Foreground="{ThemeResource AppAccentBrush}"
+                      HorizontalAlignment="Center"
+                      Margin="0,0,0,20" />
+
+            <!-- Heading -->
+            <TextBlock Text="Thanks for checking it out"
+                       FontSize="20"
+                       FontWeight="SemiBold"
+                       TextAlignment="Center"
+                       TextWrapping="WrapWholeWords"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                       Margin="0,0,0,12" />
+
+            <!-- Body -->
+            <TextBlock TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       FontSize="13"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       Margin="0,0,0,28">
+                <Run>Have a question, found a bug, or want to suggest a feature?</Run>
+                <LineBreak />
+                <Run>GitHub Discussions is the best place to reach out.</Run>
+            </TextBlock>
+
+            <!-- Discussions button -->
+            <HyperlinkButton Content="Open GitHub Discussions"
+                             NavigateUri="https://github.com/billydavis/divoom.app/discussions"
+                             HorizontalAlignment="Center"
+                             FontSize="14"
+                             FontWeight="SemiBold"
+                             Foreground="{ThemeResource AppAccentBrush}" />
+
+            <!-- Separator -->
+            <Rectangle Height="1"
+                       Fill="{ThemeResource AppCardBorderBrush}"
+                       Margin="0,28,0,24" />
+
+            <!-- Repo link -->
+            <TextBlock Text="Source code"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       TextAlignment="Center"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       Margin="0,0,0,4" />
+
+            <HyperlinkButton Content="github.com/billydavis/divoom.app"
+                             NavigateUri="https://github.com/billydavis/divoom.app"
+                             HorizontalAlignment="Center"
+                             FontSize="12"
+                             Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+        </StackPanel>
     </Grid>
+
 </Page>
