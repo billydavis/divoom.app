@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Storage;
@@ -6,10 +7,13 @@ namespace divoom.app.Services;
 
 public static class AppSettings
 {
+    public static event Action? FoldersChanged;
+
     private static readonly ApplicationDataContainer _settings = ApplicationData.Current.LocalSettings;
 
     private const string KeyProbeOnStartup = "Settings_ProbeOnStartup";
     private const string KeyExtraFolderTokens = "Settings_ExtraFolderTokens";
+    private const string KeyDefaultStorageFolderToken = "Settings_DefaultStorageFolderToken";
     private const string KeyGlobalPromptInstructions = "Settings_GlobalPromptInstructions";
     private const string KeyProviderInstructionsPrefix = "Settings_ProviderInstructions_";
     private const string KeyLastSelectedMac = "Settings_LastSelectedMac";
@@ -53,6 +57,7 @@ public static class AppSettings
         {
             tokens.Add(token);
             _settings.Values[KeyExtraFolderTokens] = string.Join('|', tokens);
+            FoldersChanged?.Invoke();
         }
     }
 
@@ -61,6 +66,17 @@ public static class AppSettings
         var tokens = ExtraFolderTokens.ToList();
         tokens.Remove(token);
         _settings.Values[KeyExtraFolderTokens] = string.Join('|', tokens);
+        FoldersChanged?.Invoke();
+    }
+
+    public static string DefaultStorageFolderToken
+    {
+        get => _settings.Values[KeyDefaultStorageFolderToken] as string ?? "";
+        set
+        {
+            _settings.Values[KeyDefaultStorageFolderToken] = value;
+            FoldersChanged?.Invoke();
+        }
     }
 
     public static string? GetApiKey(string settingsKey) =>

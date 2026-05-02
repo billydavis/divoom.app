@@ -1,4 +1,80 @@
-# Divoom Manager
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+Divoom Manager is a WinUI 3 / Windows App SDK 1.6 desktop app (C# / .NET 8) for managing Divoom pixel art devices. It supports device discovery, image browsing, and AI-powered image generation.
+
+---
+
+## Build & Run
+
+**Primary workflow**: Open `divoom.app.sln` in Visual Studio 2022 (17.13+) and run. Two launch profiles are defined in `Properties/launchSettings.json`:
+
+- `divoom.app (Unpackaged)` — direct run, default for development
+- `divoom.app (Package)` — MSIX-packaged deployment
+
+**Supported platforms**: x86, x64, ARM64
+
+**Icon generation** (only needed when SVG source changes):
+```
+node convert-icons.mjs
+```
+Requires `sharp` (`npm install`). Outputs `Assets/AppIcon-dark.png` and `Assets/AppIcon-light.png` at 48×48 px.
+
+**No test projects exist.**
+
+---
+
+## Architecture
+
+### Project Structure
+
+Single-project solution (`divoom.app`). Key areas:
+
+- `App.xaml(.cs)` — app lifecycle (minimal), theme `ResourceDictionary` entries, device icon `DataTemplate` resources
+- `MainWindow.xaml(.cs)` — window chrome, custom title bar, SplitView shell, page cache and navigation routing
+- `Pages/` — five full-page views (Devices, ImageViewer, CreateImage, Settings, ComingSoon)
+- `Controls/` — `SideMenu`, `SideMenuButton`, `DivoomButton` (device card)
+- `Services/` — stateless/static helpers for state, settings, device persistence, and AI image generation
+- `Models/` — `DeviceViewModel`, `NavigationChangeEvent`
+- `Converters/` — `HardwareToNameConverter`, `HardwareIconSelector` (DataTemplateSelector)
+- `Utilities/` — `ImageFileInfo` (async image loading wrapper)
+
+**External dependency**: `Divoom.net.dll` — referenced from a sibling repo at `..\..\divoom.net\...`. This library handles the Divoom UDP/HTTP protocol (device discovery, commands).
+
+### Navigation
+
+`SideMenu` fires a `NavigationChangeEvent`. `MainWindow.SideMenu_OnNavigationChange()` handles it by swapping `ContentFrame.Content` to a page from a `Dictionary<string, Page> _pages` cache. Pages are instantiated once and reused — there is no `Frame` navigation stack.
+
+### State & Persistence
+
+| Class | Pattern | Storage |
+|-------|---------|---------|
+| `AppState` | Static, event-driven | In-memory only; fires `SelectionChanged` when device/channel changes |
+| `AppSettings` | Static wrapper | `ApplicationData.Current.LocalSettings` (key-value) |
+| `DeviceStore` | Static | JSON file in local app folder |
+
+**Default image storage folder**: `%LocalAppData%\DivoomManager\Images` — created via `System.IO.Directory.CreateDirectory` (not `ApplicationData.Current.LocalFolder`, which would put it under the MSIX package sandbox GUID). The folder resolution helper `GetDefaultStorageFolderAsync()` is a private static method duplicated in each XAML code-behind that needs it (`ImageViewerPage`, `SettingsPage`, `CreateImagePage`) — WinRT async operations are only awaitable within XAML partial class contexts in this project.
+
+### Image Generation (CreateImagePage)
+
+Four AI providers implement `IImageGenerationProvider` (DisplayName, SettingsKey, `GenerateAsync`):
+- `DallEProvider` — OpenAI DALL-E 3
+- `GeminiProvider` — Google Gemini
+- `DeepAiProvider` — DeepAI
+- `StabilityProvider` — Stability AI
+
+API keys and per-provider prompt instructions are stored in `AppSettings` (LocalSettings). A global system prompt can also be set. To add a provider, implement the interface and register it in `CreateImagePage`.
+
+### Code Style
+
+- **Pattern**: Code-behind with light MVVM (no framework, no DI container). Pages use `ObservableCollection` and `INotifyPropertyChanged` directly.
+- **Nullable**: Enabled (`Nullable=true` in .csproj). Use `!` annotations only when null is genuinely impossible.
+- **Bindings**: Prefer `x:Bind` (compile-time) over `{Binding}` (runtime). Use `Mode=OneWay` / `Mode=TwoWay` explicitly.
+
+---
 
 ## Theme — Slate
 

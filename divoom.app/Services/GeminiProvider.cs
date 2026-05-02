@@ -20,7 +20,7 @@ public sealed class GeminiProvider : IImageGenerationProvider
         var body = JsonSerializer.Serialize(new
         {
             instances = new[] { new { prompt } },
-            parameters = new { sampleCount = 1 }
+            parameters = new { sampleCount = 1, aspectRatio = "1:1" }
         });
 
         using var content = new StringContent(body, Encoding.UTF8, "application/json");

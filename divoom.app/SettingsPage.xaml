@@ -28,14 +28,51 @@
                           Margin="0,-4,0,0"
                           Toggled="ProbeOnStartupToggle_Toggled" />
 
-            <!-- ── Image Folders ────────────────────────────── -->
-            <TextBlock Text="IMAGE FOLDERS"
+            <!-- ── Default Storage Folder ──────────────────── -->
+            <TextBlock Text="DEFAULT STORAGE FOLDER"
                        FontSize="12"
                        FontWeight="SemiBold"
                        Foreground="{ThemeResource AppAccentBrush}"
                        Margin="0,16,0,0" />
 
-            <TextBlock Text="Additional folders scanned when viewing images. Built-in and generated image folders are always included."
+            <TextBlock Text="Generated and uploaded images are saved here."
+                       FontSize="12"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       TextWrapping="Wrap" />
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="DefaultFolderPathText"
+                           Grid.Column="0"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="12"
+                           Margin="0,0,8,0" />
+                <Button Grid.Column="1"
+                        Content="Change…"
+                        FontSize="12"
+                        Padding="8,4"
+                        Click="ChangeFolderButton_Click" />
+            </Grid>
+
+            <HyperlinkButton x:Name="ResetFolderButton"
+                             Content="Reset to default"
+                             FontSize="12"
+                             Padding="0"
+                             Margin="0,-4,0,0"
+                             Click="ResetFolderButton_Click" />
+
+            <!-- ── Image Folders ────────────────────────────── -->
+            <TextBlock Text="ADDITIONAL IMAGE FOLDERS"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="{ThemeResource AppAccentBrush}"
+                       Margin="0,16,0,0" />
+
+            <TextBlock Text="Extra folders scanned when viewing images."
                        FontSize="12"
                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                        TextWrapping="Wrap" />

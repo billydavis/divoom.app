@@ -30,6 +30,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -45,9 +46,14 @@
                        FontSize="20"
                        VerticalAlignment="Center" />
 
-            <Button Grid.Column="1"
-                    x:Name="ReloadButton"
-                    VerticalAlignment="Center"
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+
+            <Button x:Name="UploadButton"
+                    IsEnabled="{x:Bind IsNotLoading, Mode=OneWay}"
+                    Click="UploadButton_Click"
+                    Content="Upload" />
+
+            <Button x:Name="ReloadButton"
                     IsEnabled="{x:Bind IsNotLoading, Mode=OneWay}"
                     Click="ReloadButton_Click">
                 <Grid>
@@ -61,10 +67,18 @@
                     </StackPanel>
                 </Grid>
             </Button>
+
+            </StackPanel>
         </Grid>
 
+        <!-- Send feedback bar -->
+        <InfoBar x:Name="SendFeedbackBar"
+                 Grid.Row="1"
+                 IsOpen="False"
+                 IsClosable="False" />
+
         <!-- Image grid -->
-        <ScrollViewer Grid.Row="1"
+        <ScrollViewer Grid.Row="2"
                       Visibility="{x:Bind ImageListVisibility, Mode=OneWay}">
             <ItemsRepeater x:Name="ImageRepeater"
                            ItemsSource="{x:Bind Images}"
@@ -92,7 +106,7 @@
         </ScrollViewer>
 
         <!-- Loading placeholder -->
-        <StackPanel Grid.Row="1"
+        <StackPanel Grid.Row="2"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Spacing="14"
@@ -105,7 +119,7 @@
         </StackPanel>
 
         <!-- Empty state -->
-        <StackPanel Grid.Row="1"
+        <StackPanel Grid.Row="2"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Spacing="10"

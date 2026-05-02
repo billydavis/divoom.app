@@ -4,15 +4,18 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.FileProperties;
+using Windows.Storage.Pickers;
 using Windows.Storage.Search;
+using WinRT.Interop;
 
 namespace divoom.app;
 
@@ -51,7 +54,10 @@ public sealed partial class ImageViewerPage : Page, INotifyPropertyChanged
         Images.CollectionChanged += (_, _) => NotifyLoadingChanged();
         InitializeAsync();
         CreateImagePage.ImageSaved += OnImageSaved;
+        AppSettings.FoldersChanged += OnFoldersChanged;
     }
+
+    private async void OnFoldersChanged() => await ReloadAsync();
 
     private async void OnImageSaved(StorageFile file)
     {
@@ -72,20 +78,27 @@ public sealed partial class ImageViewerPage : Page, INotifyPropertyChanged
         NotifyLoadingChanged();
     }
 
+    private static async Task<StorageFolder> GetDefaultStorageFolderAsync()
+    {
+        var token = AppSettings.DefaultStorageFolderToken;
+        if (!string.IsNullOrEmpty(token))
+        {
+            try { return await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token); }
+            catch { }
+        }
+        var path = System.IO.Path.Combine(
+            Windows.Storage.UserDataPaths.GetDefault().LocalAppData,
+            "DivoomManager", "Images");
+        System.IO.Directory.CreateDirectory(path);
+        return await StorageFolder.GetFolderFromPathAsync(path);
+    }
+
     private async Task GetItemsAsync()
     {
         try
         {
-            StorageFolder installedFolder = await Package.Current.InstalledLocation.GetFolderAsync("Images");
-            foreach (StorageFile file in await installedFolder.CreateFileQueryWithOptions(new QueryOptions()).GetFilesAsync())
-                Images.Add(await LoadImageInfoAsync(file));
-        }
-        catch (Exception) { }
-
-        try
-        {
-            StorageFolder generatedFolder = await ApplicationData.Current.LocalFolder.GetFolderAsync("Images");
-            foreach (StorageFile file in await generatedFolder.CreateFileQueryWithOptions(new QueryOptions()).GetFilesAsync())
+            var defaultFolder = await GetDefaultStorageFolderAsync();
+            foreach (StorageFile file in await defaultFolder.CreateFileQueryWithOptions(new QueryOptions()).GetFilesAsync())
                 Images.Add(await LoadImageInfoAsync(file));
         }
         catch (Exception) { }
@@ -147,28 +160,120 @@ public sealed partial class ImageViewerPage : Page, INotifyPropertyChanged
         }
     }
 
-    private void SendToDevice_Click(object sender, RoutedEventArgs e)
+    private async void SendToDevice_Click(object sender, RoutedEventArgs e)
     {
-        // TODO: wire up to Divoom API
+        var image = _contextMenuTarget;
+        var device = AppState.SelectedDevice;
+
+        if (image is null) return;
+
+        if (device is null || string.IsNullOrEmpty(device.IpAddress))
+        {
+            ShowFeedback(Microsoft.UI.Xaml.Controls.InfoBarSeverity.Warning,
+                "No device selected — pick one from the Devices page first.");
+            return;
+        }
+
+        var targetSize = 64; // all current devices use 64x64 panels
+
+        _isLoading = true;
+        NotifyLoadingChanged();
+        try
+        {
+            var isTimesGate = device.Hardware == 400;
+            var imageData = isTimesGate
+                ? await ImageResizeCache.GetOrCacheJpegAsync(image.ImageFile, targetSize)
+                : await ImageResizeCache.GetOrCacheRgbAsync(image.ImageFile, targetSize);
+            var divoomDevice = new Divoom.Device(device.IpAddress);
+            var lcdIndex = isTimesGate ? device.SelectedChannel : -1;
+            var success = await divoomDevice.SendImageAsync(targetSize, imageData, lcdIndex);
+
+            ShowFeedback(
+                success ? Microsoft.UI.Xaml.Controls.InfoBarSeverity.Success
+                        : Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error,
+                success ? $"Sent to {device.Name}."
+                        : "Device did not accept the image — it may be offline.");
+        }
+        catch (Exception ex)
+        {
+            ShowFeedback(Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error, ex.Message);
+        }
+        finally
+        {
+            _isLoading = false;
+            NotifyLoadingChanged();
+        }
+    }
+
+    private async void ShowFeedback(Microsoft.UI.Xaml.Controls.InfoBarSeverity severity, string message)
+    {
+        SendFeedbackBar.Severity = severity;
+        SendFeedbackBar.Message = message;
+        SendFeedbackBar.IsOpen = true;
+        await Task.Delay(3000);
+        SendFeedbackBar.IsOpen = false;
+    }
+
+    private async void UploadButton_Click(object sender, RoutedEventArgs e)
+    {
+        var picker = new FileOpenPicker { SuggestedStartLocation = PickerLocationId.PicturesLibrary };
+        picker.FileTypeFilter.Add(".png");
+        picker.FileTypeFilter.Add(".jpg");
+        picker.FileTypeFilter.Add(".jpeg");
+        picker.FileTypeFilter.Add(".gif");
+        InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
+
+        var files = await picker.PickMultipleFilesAsync();
+        if (files is null || files.Count == 0) return;
+
+        var errors = new List<string>();
+        var saveFolder = await GetDefaultStorageFolderAsync();
+
+        foreach (var file in files)
+        {
+            try
+            {
+                using var stream = await file.OpenReadAsync();
+                var decoder = await BitmapDecoder.CreateAsync(stream);
+                uint w = decoder.PixelWidth, h = decoder.PixelHeight;
+
+                if (w != h)
+                {
+                    errors.Add($"{file.Name}: must be square (is {w}×{h}).");
+                    continue;
+                }
+                if (w > 1024)
+                {
+                    errors.Add($"{file.Name}: too large (max 1024×1024, is {w}×{h}).");
+                    continue;
+                }
+
+                await file.CopyAsync(saveFolder, file.Name, NameCollisionOption.GenerateUniqueName);
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"{file.Name}: {ex.Message}");
+            }
+        }
+
+        if (errors.Count > 0)
+        {
+            var errorDialog = new ContentDialog
+            {
+                Title = "Some files were skipped",
+                Content = string.Join("\n", errors),
+                CloseButtonText = "OK",
+                XamlRoot = XamlRoot
+            };
+            await errorDialog.ShowAsync();
+        }
+
+        await ReloadAsync();
     }
 
     private async void DeleteImage_Click(object sender, RoutedEventArgs e)
     {
         if (_contextMenuTarget is null) return;
-
-        var installedPath = Package.Current.InstalledLocation.Path;
-        if (_contextMenuTarget.ImageFile.Path.StartsWith(installedPath, StringComparison.OrdinalIgnoreCase))
-        {
-            var info = new ContentDialog
-            {
-                Title = "Cannot delete",
-                Content = "Built-in images cannot be deleted.",
-                CloseButtonText = "OK",
-                XamlRoot = XamlRoot
-            };
-            await info.ShowAsync();
-            return;
-        }
 
         var dialog = new ContentDialog
         {

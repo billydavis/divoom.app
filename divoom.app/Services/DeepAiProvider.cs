@@ -17,6 +17,8 @@ public sealed class DeepAiProvider : IImageGenerationProvider
 
         using var form = new MultipartFormDataContent();
         form.Add(new StringContent(prompt), "text");
+        form.Add(new StringContent("512"), "width");
+        form.Add(new StringContent("512"), "height");
 
         var response = await client.PostAsync("https://api.deepai.org/api/text2img", form, ct);
         if (!response.IsSuccessStatusCode)

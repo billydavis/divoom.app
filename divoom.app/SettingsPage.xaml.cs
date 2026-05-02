@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
@@ -22,12 +23,31 @@ public sealed partial class SettingsPage : Page
         Loaded += OnLoaded;
     }
 
+    private static async Task<StorageFolder> GetDefaultStorageFolderAsync()
+    {
+        var token = AppSettings.DefaultStorageFolderToken;
+        if (!string.IsNullOrEmpty(token))
+        {
+            try { return await StorageApplicationPermissions.FutureAccessList.GetFolderAsync(token); }
+            catch { }
+        }
+        var path = System.IO.Path.Combine(
+            Windows.Storage.UserDataPaths.GetDefault().LocalAppData,
+            "DivoomManager", "Images");
+        System.IO.Directory.CreateDirectory(path);
+        return await StorageFolder.GetFolderFromPathAsync(path);
+    }
+
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         _loading = true;
         try
         {
             ProbeOnStartupToggle.IsOn = AppSettings.ProbeOnStartup;
+
+            DefaultFolderPathText.Text = (await GetDefaultStorageFolderAsync()).Path;
+            ResetFolderButton.Visibility = string.IsNullOrEmpty(AppSettings.DefaultStorageFolderToken)
+                ? Visibility.Collapsed : Visibility.Visible;
 
             _folderItems.Clear();
             foreach (var token in AppSettings.ExtraFolderTokens)
@@ -96,6 +116,41 @@ public sealed partial class SettingsPage : Page
             grid.Children.Add(removeBtn);
             FolderListPanel.Children.Add(grid);
         }
+    }
+
+    private async void ChangeFolderButton_Click(object sender, RoutedEventArgs e)
+    {
+        var picker = new FolderPicker { SuggestedStartLocation = PickerLocationId.Desktop };
+        picker.FileTypeFilter.Add("*");
+        var hwnd = WindowNative.GetWindowHandle(App.MainWindow);
+        InitializeWithWindow.Initialize(picker, hwnd);
+
+        var folder = await picker.PickSingleFolderAsync();
+        if (folder is null) return;
+
+        var oldToken = AppSettings.DefaultStorageFolderToken;
+        if (!string.IsNullOrEmpty(oldToken))
+        {
+            try { StorageApplicationPermissions.FutureAccessList.Remove(oldToken); } catch { }
+        }
+
+        var token = StorageApplicationPermissions.FutureAccessList.Add(folder);
+        AppSettings.DefaultStorageFolderToken = token;
+        DefaultFolderPathText.Text = folder.Path;
+        ResetFolderButton.Visibility = Visibility.Visible;
+    }
+
+    private async void ResetFolderButton_Click(object sender, RoutedEventArgs e)
+    {
+        var oldToken = AppSettings.DefaultStorageFolderToken;
+        if (!string.IsNullOrEmpty(oldToken))
+        {
+            try { StorageApplicationPermissions.FutureAccessList.Remove(oldToken); } catch { }
+        }
+
+        AppSettings.DefaultStorageFolderToken = "";
+        DefaultFolderPathText.Text = (await GetDefaultStorageFolderAsync()).Path;
+        ResetFolderButton.Visibility = Visibility.Collapsed;
     }
 
     private void ProbeOnStartupToggle_Toggled(object sender, RoutedEventArgs e)

@@ -18,6 +18,8 @@ public sealed class StabilityProvider : IImageGenerationProvider
         using var form = new MultipartFormDataContent();
         form.Add(new StringContent(prompt), "prompt");
         form.Add(new StringContent("png"), "output_format");
+        form.Add(new StringContent("512"), "width");
+        form.Add(new StringContent("512"), "height");
 
         var response = await client.PostAsync(
             "https://api.stability.ai/v2beta/stable-image/generate/core",

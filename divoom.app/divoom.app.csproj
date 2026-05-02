@@ -49,12 +49,7 @@
     <PackageReference Include="WinUIEx" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="images\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Divoom.net">
-      <HintPath>..\..\divoom.net\divoom.net\bin\Debug\net8.0\Divoom.net.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\divoom.net\divoom.net\Divoom.net.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Page Update="ComingSoon.xaml">
@@ -69,33 +64,6 @@
     <Page Update="Controls\DivoomButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <None Update="images\chinchilla.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\explosion.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\fdt.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\fdt.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\leather.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\puppy.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\stingrays.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\stingrays.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="images\stingrays.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Page Update="SideMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
