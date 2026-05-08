@@ -1,6 +1,9 @@
 # Divoom Manager
 
+
 A Windows desktop app for managing [Divoom](https://www.divoom.com/) pixel art devices — browse your image library, generate AI artwork, and push it to your device in one click.
+
+![Divoom Manager](divoom-cover.webp)
 
 Built with WinUI 3 / Windows App SDK and C# / .NET 8.
 
