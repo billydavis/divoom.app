@@ -5,7 +5,7 @@ A Windows desktop app for managing [Divoom](https://www.divoom.com/) pixel art d
 
 ![Divoom Manager](divoom-cover.webp)
 
-Built with WinUI 3 / Windows App SDK and C# / .NET 8.
+Built with WinUI 3 / Windows App SDK and C# / .NET 10.
 
 ---
 
@@ -36,11 +36,11 @@ Built with WinUI 3 / Windows App SDK and C# / .NET 8.
 ## Requirements
 
 - Windows 10 version 1809 or later (Windows 11 recommended)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/) version 17.13 or later
+- [Visual Studio 2026](https://visualstudio.microsoft.com/) (required for .NET 10)
   - Workload: **.NET desktop development**
   - Workload: **Windows application development**
 - [Windows App SDK 1.6](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/)
-- .NET 8 SDK
+- .NET 10 SDK
 
 ---
 
@@ -64,7 +64,7 @@ parent/
     └── divoom.app.sln
 ```
 
-Open `divoom.app/divoom.app.sln` in Visual Studio 2022 and run the **`divoom.app (Unpackaged)`** launch profile.
+Open `divoom.app/divoom.app.sln` in Visual Studio 2026 and run the **`divoom.app (Unpackaged)`** launch profile.
 
 ---
 

@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Divoom Manager is a WinUI 3 / Windows App SDK 1.6 desktop app (C# / .NET 8) for managing Divoom pixel art devices. It supports device discovery, image browsing, and AI-powered image generation.
+Divoom Manager is a WinUI 3 / Windows App SDK 1.6 desktop app (C# / .NET 10) for managing Divoom pixel art devices. It supports device discovery, image browsing, and AI-powered image generation.
 
 ---
 
 ## Build & Run
 
-**Primary workflow**: Open `divoom.app.sln` in Visual Studio 2022 (17.13+) and run. Two launch profiles are defined in `Properties/launchSettings.json`:
+**Primary workflow**: Open `divoom.app.sln` in Visual Studio 2026 and run. Two launch profiles are defined in `Properties/launchSettings.json`:
 
 - `divoom.app (Unpackaged)` — direct run, default for development
 - `divoom.app (Package)` — MSIX-packaged deployment
