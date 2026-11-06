@@ -10,7 +10,7 @@ Divoom Manager is a WinUI 3 / Windows App SDK 1.6 desktop app (C# / .NET 10) for
 
 ## Build & Run
 
-**Primary workflow**: Open `divoom.app.sln` in Visual Studio 2026 and run. Two launch profiles are defined in `Properties/launchSettings.json`:
+**Primary workflow**: Open `divoom.app.slnx` in Visual Studio 2026 and run. Two launch profiles are defined in `Properties/launchSettings.json`:
 
 - `divoom.app (Unpackaged)` — direct run, default for development
 - `divoom.app (Package)` — MSIX-packaged deployment

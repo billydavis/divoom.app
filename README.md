@@ -61,10 +61,10 @@ parent/
 │   └── divoom.net/
 │       └── divoom.net.csproj
 └── divoom.app/
-    └── divoom.app.sln
+    └── divoom.app.slnx
 ```
 
-Open `divoom.app/divoom.app.sln` in Visual Studio 2026 and run the **`divoom.app (Unpackaged)`** launch profile.
+Open `divoom.app/divoom.app.slnx` in Visual Studio 2026 and run the **`divoom.app (Unpackaged)`** launch profile.
 
 ---
 
